@@ -8,6 +8,8 @@
 
 		Color Info { get; }
 
-		Color Warn { get; }
-	}
+	    Color Warn { get; }
+
+	    Color Mew { get; }
+    }
 }

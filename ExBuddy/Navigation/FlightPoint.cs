@@ -1,7 +1,7 @@
 ﻿namespace ExBuddy.Navigation
 {
-	using System;
 	using Clio.Utilities;
+	using System;
 
 	public struct FlightPoint
 	{
@@ -17,8 +17,8 @@
 			}
 
 			return other.Location.Distance3D(Location) < 0.8f
-			       || (Math.Abs(other.Location.X - Location.X) < float.Epsilon
-			           && Math.Abs(other.Location.Z - Location.Z) < float.Epsilon);
+				   || (Math.Abs(other.Location.X - Location.X) < float.Epsilon
+					   && Math.Abs(other.Location.Z - Location.Z) < float.Epsilon);
 		}
 
 		public static implicit operator Vector3(FlightPoint flightPoint)
@@ -28,7 +28,13 @@
 
 		public static implicit operator FlightPoint(Vector3 vector)
 		{
-			return new FlightPoint {Location = vector};
+			return new FlightPoint { Location = vector };
+		}
+
+		public static FlightPoint operator +(FlightPoint first, Vector3 loc)
+		{
+			first.Location += loc;
+			return first;
 		}
 
 		public override string ToString()

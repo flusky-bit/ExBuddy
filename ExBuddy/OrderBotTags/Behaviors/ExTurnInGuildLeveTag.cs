@@ -1,12 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -16,9 +9,17 @@
 	using ExBuddy.Windows;
 	using ff14bot;
 	using ff14bot.Behavior;
+	using ff14bot.Enums;
 	using ff14bot.Helpers;
 	using ff14bot.Managers;
 	using ff14bot.RemoteWindows;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Diagnostics;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExGuildLeve")]
 	[XmlElement("ExTurnInGuildLeve")]
@@ -134,7 +135,7 @@
 			{
 				if (iconStringIndex == 9001)
 				{
-					iconStringIndex = (uint) SelectIconString.Lines().Count - 1;
+					iconStringIndex = (uint)SelectIconString.Lines().Count - 1;
 				}
 
 				// We will just click the last quest and decrement until we have either no quests left or none to turn in.
@@ -157,7 +158,7 @@
 				var lines = SelectString.Lines();
 
 				// If Collect Reward exists, we click that; otherwise we will click Close. (-1 as uint = uint.MaxValue)
-				var index = (uint) lines.IndexOf(CollectRewardText, StringComparer.InvariantCultureIgnoreCase);
+				var index = (uint)lines.IndexOf(CollectRewardText, StringComparer.InvariantCultureIgnoreCase);
 
 				if (index != uint.MaxValue)
 				{
@@ -168,7 +169,7 @@
 				}
 
 				// If yes is an option, click it to turn in more items.(crafting)
-				index = (uint) lines.IndexOf(YesText, StringComparer.InvariantCultureIgnoreCase);
+				index = (uint)lines.IndexOf(YesText, StringComparer.InvariantCultureIgnoreCase);
 
 				if (index != uint.MaxValue)
 				{
@@ -192,8 +193,11 @@
 				var itemId = Memory.Request.ItemId1;
 
 				IEnumerable<BagSlot> itemSlots =
-					InventoryManager.FilledInventoryAndArmory.Where(
-						bs => bs.RawItemId == itemId && !Blacklist.Contains((uint) bs.Pointer.ToInt32(), BlacklistFlags.Loot)).ToArray();
+					InventoryManager.FilledInventoryAndArmory
+						.Where(
+							bs => bs.RawItemId == itemId
+							      && bs.BagId != InventoryBagId.EquippedItems
+							      && !Blacklist.Contains((uint)bs.Pointer.ToInt64(), BlacklistFlags.Loot)).ToArray();
 
 				if (HqOnly)
 				{
@@ -350,7 +354,7 @@
 		{
 			var ticks = 0;
 			while (ticks++ < 3 && !SelectIconString.IsOpen && !SelectString.IsOpen && !Request.IsOpen && !JournalResult.IsOpen
-			       && Behaviors.ShouldContinue)
+				   && Behaviors.ShouldContinue)
 			{
 				await this.Interact();
 
@@ -387,6 +391,6 @@
 		[XmlAttribute("NpcId")]
 		public uint NpcId { get; set; }
 
-		#endregion
+		#endregion IInteractWithNpc Members
 	}
 }

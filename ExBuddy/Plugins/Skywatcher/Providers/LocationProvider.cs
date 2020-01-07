@@ -1,11 +1,11 @@
 ﻿namespace ExBuddy.Plugins.Skywatcher.Providers
 {
-	using System;
-	using System.IO;
-	using System.Linq;
 	using ExBuddy.Plugins.Skywatcher.Objects;
 	using ff14bot.Managers;
 	using Newtonsoft.Json;
+	using System;
+	using System.IO;
+	using System.Linq;
 
 	public class LocationProvider
 	{
@@ -46,7 +46,7 @@
 			{
 				var serializer = new JsonSerializer();
 
-				data = (LocationIndex) serializer.Deserialize(file, typeof (LocationIndex));
+				data = (LocationIndex)serializer.Deserialize(file, typeof(LocationIndex));
 			}
 		}
 

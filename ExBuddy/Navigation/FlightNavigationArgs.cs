@@ -35,6 +35,6 @@
 
 		public float Smoothing { get; set; }
 
-		#endregion
+		#endregion IFlightNavigationArgs Members
 	}
 }

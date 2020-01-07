@@ -1,7 +1,7 @@
 ﻿namespace ExBuddy.Plugins.Skywatcher
 {
-	using System.Collections.Generic;
 	using Newtonsoft.Json;
+	using System.Collections.Generic;
 
 	public class WeatherResponse
 	{

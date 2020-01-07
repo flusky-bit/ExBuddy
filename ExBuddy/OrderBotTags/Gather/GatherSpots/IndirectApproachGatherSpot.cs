@@ -1,13 +1,17 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.GatherSpots
 {
-	using System.ComponentModel;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
 	using ExBuddy.Helpers;
+	using System.ComponentModel;
+	using System.Threading.Tasks;
+	using ff14bot;
+	using ff14bot.Behavior;
+	using ff14bot.Managers;
+	using ff14bot.Navigation;
 
-	[XmlElement("IndirectApproachGatherSpot")]
+    [XmlElement("IndirectApproachGatherSpot")]
 	public class IndirectApproachGatherSpot : GatherSpot
 	{
 		[XmlAttribute("ApproachLocation")]
@@ -24,7 +28,7 @@
 			var result = true;
 			if (ReturnToApproachLocation)
 			{
-				result &= await ApproachLocation.MoveToNoMount(UseMesh, tag.Radius, tag.Node.EnglishName, tag.MovementStopCallback);
+				result &= await ApproachLocation.MoveToOnGroundNoMount(tag.Distance, tag.Node.EnglishName, tag.MovementStopCallback);
 			}
 
 			return result;
@@ -43,17 +47,30 @@
 				await
 					ApproachLocation.MoveTo(
 						UseMesh,
-						radius: tag.Radius,
+						radius: tag.Distance,
 						name: "Approach Location",
 						stopCallback: tag.MovementStopCallback);
 
-			if (result)
-			{
-				await Coroutine.Yield();
-				result = await NodeLocation.MoveToNoMount(UseMesh, tag.Distance, tag.Node.EnglishName, tag.MovementStopCallback);
-			}
+		    if (!result) return false;
 
-			return result;
-		}
-	}
+		    var landed = MovementManager.IsDiving || await NewNewLandingTask();
+		    if (landed && Core.Player.IsMounted && !MovementManager.IsDiving)
+                ActionManager.Dismount();
+
+            Navigator.Stop();
+            await Coroutine.Yield();
+
+		    result = await NodeLocation.MoveToOnGroundNoMount(tag.Distance, tag.Node.EnglishName, tag.MovementStopCallback);
+
+		    return result;
+        }
+
+        private async Task<bool> NewNewLandingTask()
+        {
+            if (!MovementManager.IsFlying) { return true; }
+
+            while (MovementManager.IsFlying) { ActionManager.Dismount(); await Coroutine.Sleep(500); }
+            return true;
+        }
+    }
 }

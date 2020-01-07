@@ -2,8 +2,10 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
+	using System.Threading.Tasks;
+	using Helpers;
 
-	//Name, RequiredTime, RequiredGpBreakpoints
+    //Name, RequiredTime, RequiredGpBreakpoints
 	[GatheringRotation("RegularNode")]
 	public sealed class RegularNodeGatheringRotation : GatheringRotation, IGetOverridePriority
 	{
@@ -11,7 +13,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 		int IGetOverridePriority.GetOverridePriority(ExGatherTag tag)
 		{
-			if (tag.IsEphemeral() || tag.IsUnspoiled() || tag.CollectableItem != null)
+			if (tag.Node.IsEphemeral() || tag.Node.IsUnspoiled() || tag.CollectableItem != null)
 			{
 				return -1;
 			}
@@ -19,6 +21,11 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return 8000;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
+
+		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
+		{
+			return true;
+		}
 	}
 }

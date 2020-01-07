@@ -1,15 +1,15 @@
 ﻿namespace ExBuddy.Plugins.Skywatcher
 {
+	using ExBuddy.Helpers;
+	using ExBuddy.Interfaces;
+	using ExBuddy.Logging;
+	using ff14bot.Managers;
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Net.Http;
 	using System.Text.RegularExpressions;
 	using System.Threading;
-	using ExBuddy.Helpers;
-	using ExBuddy.Interfaces;
-	using ExBuddy.Logging;
-	using ff14bot.Managers;
 
 	public class FF14AnglerWeatherProvider : IWeatherProvider
 	{
@@ -69,8 +69,8 @@
 		/// <param name="stateInfo">The state info.</param>
 		private static void GetEntries(object stateInfo)
 		{
-			if (WorldManager.EorzaTime.TimeOfDay.Hours%8 == 0 || weatherResults == null
-			    || lastInterval < SkywatcherPlugin.GetIntervalNumber())
+			if (WorldManager.EorzaTime.TimeOfDay.Hours % 8 == 0 || weatherResults == null
+				|| lastInterval < SkywatcherPlugin.GetIntervalNumber())
 			{
 				HttpClient client = null;
 				try
@@ -99,7 +99,7 @@
 						// New interval not posted, retry every 30 seconds
 						RequestTimer.Change(
 							TimeSpan.FromSeconds(30),
-							TimeSpan.FromMilliseconds((int) SkywatcherPlugin.GetTimeTillNextInterval()));
+							TimeSpan.FromMilliseconds((int)SkywatcherPlugin.GetTimeTillNextInterval()));
 					}
 				}
 				catch (Exception ex)
@@ -151,7 +151,7 @@
 				if (!IsEnabled)
 				{
 					IsEnabled = true;
-					RequestTimer.Change(0, (int) SkywatcherPlugin.GetTimeTillNextInterval());
+					RequestTimer.Change(0, (int)SkywatcherPlugin.GetTimeTillNextInterval());
 				}
 			}
 		}
@@ -168,7 +168,7 @@
 
 			if (weather != null)
 			{
-				return (int) weather.Weather;
+				return (int)weather.Weather;
 			}
 
 			return null;
@@ -202,12 +202,12 @@
 
 			if (weather != null)
 			{
-				return (int) weather.Weather;
+				return (int)weather.Weather;
 			}
 
 			return null;
 		}
 
-		#endregion
+		#endregion IWeatherProvider Members
 	}
 }

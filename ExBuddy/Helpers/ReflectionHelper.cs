@@ -31,7 +31,7 @@
 				Inherited = new ConcurrentDictionary<Guid, IList<TAttribute>>();
 			}
 
-			#endregion
+			#endregion Constructors and Destructors
 
 			#region Static Fields
 
@@ -45,7 +45,7 @@
 			/// </summary>
 			public static readonly ConcurrentDictionary<Guid, IList<TAttribute>> NotInherited;
 
-			#endregion
+			#endregion Static Fields
 
 			#region Public Methods and Operators
 
@@ -77,7 +77,7 @@
 			/// </typeparam>
 			public static void RegisterType<T>() where T : class
 			{
-				RegisterType(typeof (T));
+				RegisterType(typeof(T));
 			}
 
 			/// <summary>
@@ -109,7 +109,7 @@
 				RegisterTypes(assembly.GetTypes().Where(predicate).ToArray());
 			}
 
-			#endregion
+			#endregion Public Methods and Operators
 		}
 	}
 
@@ -136,11 +136,11 @@
 		/// </returns>
 		public static Func<T, object> MakeDelegate<TResult>(MethodInfo @get)
 		{
-			var f = (Func<T, TResult>) Delegate.CreateDelegate(typeof (Func<T, TResult>), @get);
+			var f = (Func<T, TResult>)Delegate.CreateDelegate(typeof(Func<T, TResult>), @get);
 			return t => f(t);
 		}
 
-		#endregion
+		#endregion Public Methods and Operators
 
 		/// <summary>
 		///     The custom attributes.
@@ -155,14 +155,14 @@
 			/// <summary>
 			///     The inherited.
 			/// </summary>
-			public static readonly IList<TAttribute> Inherited = typeof (T).GetCustomAttributes<TAttribute>(true).ToArray();
+			public static readonly IList<TAttribute> Inherited = typeof(T).GetCustomAttributes<TAttribute>(true).ToArray();
 
 			/// <summary>
 			///     The not inherited.
 			/// </summary>
-			public static readonly IList<TAttribute> NotInherited = typeof (T).GetCustomAttributes<TAttribute>(false).ToArray();
+			public static readonly IList<TAttribute> NotInherited = typeof(T).GetCustomAttributes<TAttribute>(false).ToArray();
 
-			#endregion
+			#endregion Static Fields
 		}
 	}
 }

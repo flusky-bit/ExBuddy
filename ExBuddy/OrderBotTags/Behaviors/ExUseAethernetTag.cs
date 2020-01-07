@@ -1,12 +1,7 @@
-﻿
-#pragma warning disable 1998
+﻿#pragma warning disable 1998
 
 namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.ComponentModel;
-	using System.Linq;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -14,6 +9,10 @@ namespace ExBuddy.OrderBotTags.Behaviors
 	using ExBuddy.Interfaces;
 	using ff14bot.Behavior;
 	using ff14bot.RemoteWindows;
+	using System.ComponentModel;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExUseAethernet")]
 	[XmlElement("ExUseAethernet")]
@@ -82,6 +81,6 @@ namespace ExBuddy.OrderBotTags.Behaviors
 		[XmlAttribute("Id")]
 		public uint NpcId { get; set; }
 
-		#endregion
+		#endregion IInteractWithNpc Members
 	}
 }

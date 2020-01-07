@@ -1,12 +1,11 @@
-
 #pragma warning disable 1998
 
 namespace ExBuddy
 {
-	using System.Threading.Tasks;
 	using Clio.Utilities;
 	using ExBuddy.Interfaces;
 	using ExBuddy.Logging;
+	using System.Threading.Tasks;
 
 	public class NoOpReturnStrategy : IReturnStrategy
 	{
@@ -14,13 +13,13 @@ namespace ExBuddy
 
 		public uint AetheryteId { get; set; }
 
-		#endregion
+		#endregion IAetheryteId Members
 
 		#region IZoneId Members
 
 		public ushort ZoneId { get; set; }
 
-		#endregion
+		#endregion IZoneId Members
 
 		public override string ToString()
 		{
@@ -42,6 +41,6 @@ namespace ExBuddy
 			return true;
 		}
 
-		#endregion
+		#endregion IReturnStrategy Members
 	}
 }

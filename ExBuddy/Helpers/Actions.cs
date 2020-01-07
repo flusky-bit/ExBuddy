@@ -1,16 +1,13 @@
 namespace ExBuddy.Helpers
 {
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using ExBuddy.Logging;
 	using ff14bot;
 	using ff14bot.Managers;
 	using ff14bot.Objects;
-#if RB_CN
-    using ActionManager = ff14bot.Managers.Actionmanager;
-#endif
+	using System.Threading.Tasks;
 
-    internal static class Actions
+	internal static class Actions
 	{
 		internal static async Task<bool> Cast(uint id, int delay)
 		{
@@ -25,7 +22,7 @@ namespace ExBuddy.Helpers
 			var result = ActionManager.DoAction(id, Core.Player);
 
 			var ticks = 0;
-			while (result == false && ticks++ < 5 && Behaviors.ShouldContinue)
+			while (result == false && ticks++ < 10 && Behaviors.ShouldContinue)
 			{
 				result = ActionManager.DoAction(id, Core.Player);
 				await Coroutine.Yield();
@@ -65,11 +62,7 @@ namespace ExBuddy.Helpers
 		internal static async Task<bool> CastAura(uint spellId, int delay, int auraId = -1)
 		{
 			var result = false;
-			if (auraId == -1 || !Core.Player.HasAura(
-#if !RB_CN
-                (uint)
-#endif
-                auraId))
+			if (auraId == -1 || !Core.Player.HasAura((uint) auraId))
 			{
 				SpellData spellData;
 				if (GatheringManager.ShouldPause(spellData = DataManager.SpellCache[spellId]))
@@ -95,11 +88,7 @@ namespace ExBuddy.Helpers
 				}
 
 				//Wait till we have the aura
-				await Coroutine.Wait(3500, () => Core.Player.HasAura(
-#if !RB_CN
-                    (uint)
-#endif
-                    auraId));
+				await Coroutine.Wait(3500, () => Core.Player.HasAura((uint) auraId));
 				if (delay > 0)
 				{
 					await Coroutine.Sleep(delay);

@@ -1,7 +1,5 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
@@ -9,15 +7,17 @@
 	using ff14bot.Enums;
 	using ff14bot.Managers;
 	using ff14bot.RemoteWindows;
+	using System;
+	using System.Threading.Tasks;
 
 	public sealed class MasterPieceSupply : Window<MasterPieceSupply>
 	{
 		public MasterPieceSupply()
-			: base("MasterPieceSupply") {}
+			: base("MasterPieceSupply") { }
 
 		public static uint GetClassIndex(ClassJobType classJobType)
 		{
-			return (uint) classJobType - 8;
+			return (uint)classJobType - 8;
 		}
 
 		public SendActionResult SelectClass(ClassJobType classJobType)
@@ -40,7 +40,7 @@
 			var result = SendActionResult.None;
 			var requestAttempts = 0;
 			while (result != SendActionResult.Success && !Request.IsOpen && requestAttempts++ < attempts
-			       && Behaviors.ShouldContinue)
+				   && Behaviors.ShouldContinue)
 			{
 				result = TurnIn(index);
 				if (result == SendActionResult.InjectionError)
@@ -61,7 +61,7 @@
 			// Try waiting half of the overall set time, up to 3 seconds
 			if (!Request.IsOpen)
 			{
-				if (!await Coroutine.Wait(Math.Min(3000, (interval*attempts)/2), () => Request.IsOpen))
+				if (!await Coroutine.Wait(Math.Min(3000, (interval * attempts) / 2), () => Request.IsOpen))
 				{
 					Logger.Instance.Warn(
 						Localization.Localization.MasterPieceSupply_CollectabilityValueNotEnough,
@@ -70,18 +70,7 @@
 					return false;
 				}
 			}
-
-			if (Memory.Request.ItemId1 != bagSlot.RawItemId)
-			{
-				Request.Cancel();
-				var item = DataManager.GetItem(Memory.Request.ItemId1);
-				Logger.Instance.Warn(
-					Localization.Localization.MasterPieceSupply_CannotTurnIn,
-					bagSlot.EnglishName,
-					item.EnglishName);
-				return false;
-			}
-
+            
 			requestAttempts = 0;
 			while (Request.IsOpen && requestAttempts++ < attempts && Behaviors.ShouldContinue && bagSlot.Item != null)
 			{

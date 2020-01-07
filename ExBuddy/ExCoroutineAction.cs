@@ -1,12 +1,12 @@
 ﻿namespace ExBuddy
 {
-	using System;
-	using System.Runtime.CompilerServices;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using ff14bot;
 	using ff14bot.Behavior;
 	using ff14bot.NeoProfiles;
+	using System;
+	using System.Runtime.CompilerServices;
+	using System.Threading.Tasks;
 	using TreeSharp;
 	using Action = TreeSharp.Action;
 
@@ -37,13 +37,13 @@
 		}
 
 		public ExCoroutineAction(Func<object, Task> taskProducer, ProfileBehavior behavior)
-			: this(obj => new Coroutine(() => taskProducer(obj)), behavior) {}
+			: this(obj => new Coroutine(() => taskProducer(obj)), behavior) { }
 
 		public ExCoroutineAction(Func<object, CoroutineTask<bool>> taskProducer, ProfileBehavior behavior)
-			: this(obj => taskProducer(obj).Run(), behavior) {}
+			: this(obj => taskProducer(obj).Run(), behavior) { }
 
 		public ExCoroutineAction(Func<object, CoroutineTask> taskProducer, ProfileBehavior behavior)
-			: this(obj => taskProducer(obj).Run(), behavior) {}
+			: this(obj => taskProducer(obj).Run(), behavior) { }
 
 		public override void Start(object context)
 		{
@@ -71,16 +71,19 @@
 			{
 				case CoroutineStatus.Runnable:
 					return RunStatus.Running;
+
 				case CoroutineStatus.RanToCompletion:
 					break;
+
 				case CoroutineStatus.Stopped:
 				case CoroutineStatus.Faulted:
 					return RunStatus.Failure;
+
 				default:
 					throw new Exception("Unknown CoroutineStatus " + status);
 			}
 
-			if (coroutine.Result is bool && (!(bool) coroutine.Result))
+			if (coroutine.Result is bool && (!(bool)coroutine.Result))
 			{
 				return RunStatus.Failure;
 			}
@@ -102,7 +105,7 @@
 							var awaiter = task.GetAwaiter();
 							if (!awaiter.IsCompleted)
 							{
-								// Result wasn’t available. Add a continuation, and return the builder. 
+								// Result wasn’t available. Add a continuation, and return the builder.
 								awaiter.OnCompleted(
 									() =>
 									{
@@ -119,7 +122,7 @@
 								return builder.Task;
 							}
 
-							// Result was already available: proceed synchronously 
+							// Result was already available: proceed synchronously
 							builder.SetResult(awaiter.GetResult());
 						}
 						catch (Exception e)

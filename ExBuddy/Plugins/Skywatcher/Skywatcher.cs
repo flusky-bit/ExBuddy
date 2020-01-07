@@ -7,7 +7,7 @@
 	public class Skywatcher : ExBotPlugin<Skywatcher>
 	{
 		// 1 eorzea hour > 175 seconds > 2.91 minutes
-		public const double RefreshRate = 3600*1000*(7.0/144.0);
+		public const double RefreshRate = 3600 * 1000 * (7.0 / 144.0);
 
 		public static IWeatherProvider WeatherProvider { get; private set; }
 
@@ -44,6 +44,6 @@
 			get { return Localization.Localization.Skywatcher_PluginName; }
 		}
 
-		#endregion
+		#endregion IBotPlugin
 	}
 }

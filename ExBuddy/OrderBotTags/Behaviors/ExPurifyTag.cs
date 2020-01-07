@@ -1,7 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.ComponentModel;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -12,12 +10,11 @@
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
 	using ff14bot.RemoteWindows;
+	using System.ComponentModel;
+	using System.Threading.Tasks;
 	using PurifyDialog = ExBuddy.Windows.PurifyDialog;
-#if RB_CN
-    using ActionManager = ff14bot.Managers.Actionmanager;
-#endif
 
-    [LoggerName("ExPurify")]
+	[LoggerName("ExPurify")]
 	[XmlElement("ExPurify")]
 	[XmlElement("ExReduce")]
 	public class ExPurifyTag : ExProfileBehavior
@@ -43,14 +40,7 @@
 
 			Navigator.Stop();
 
-			var ticks = 0;
-			while (MovementManager.IsFlying && ticks++ < 5 && Behaviors.ShouldContinue)
-			{
-				MovementManager.StartDescending();
-				await Coroutine.Wait(500, () => !MovementManager.IsFlying);
-			}
-
-			if (ticks > 5)
+			if (MovementManager.IsFlying && !MovementManager.IsDiving)
 			{
 				Logger.Error(Localization.Localization.ExPurify_Land);
 				return isDone = true;
@@ -71,7 +61,7 @@
 					return false;
 				}))
 			{
-				await PurifyDialog.ReduceAllItems(InventoryManager.FilledSlots, (ushort) MaxWait);
+				await PurifyDialog.ReduceAllItems(InventoryManager.FilledSlots, (ushort)MaxWait);
 			}
 			else
 			{

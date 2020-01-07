@@ -1,13 +1,13 @@
 ﻿namespace ExBuddy.Agents
 {
-	using System;
 	using ExBuddy.Offsets;
 	using ff14bot;
+	using System;
 
 	public sealed class AetherialReduction : Agent<AetherialReduction>
 	{
 		public AetherialReduction()
-			: base(172) {}
+			: base(172) { }
 
 		public IntPtr CurrentBagSlot
 		{

@@ -1,11 +1,10 @@
-
 #pragma warning disable 1998
 
 namespace ExBuddy
 {
-	using System.Threading.Tasks;
 	using Clio.Utilities;
 	using ExBuddy.Interfaces;
+	using System.Threading.Tasks;
 
 	public class NoAetheryteRunToZoneReturnStrategy : IReturnStrategy
 	{
@@ -15,13 +14,13 @@ namespace ExBuddy
 
 		public uint AetheryteId { get; set; }
 
-		#endregion
+		#endregion IAetheryteId Members
 
 		#region IZoneId Members
 
 		public ushort ZoneId { get; set; }
 
-		#endregion
+		#endregion IZoneId Members
 
 		#region IReturnStrategy Members
 
@@ -37,6 +36,6 @@ namespace ExBuddy
 			return true;
 		}
 
-		#endregion
+		#endregion IReturnStrategy Members
 	}
 }

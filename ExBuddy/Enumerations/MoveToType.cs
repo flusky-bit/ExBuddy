@@ -4,8 +4,10 @@
 	{
 		StopWithinRange,
 
-		RandomPointWithin,
+	    RandomPointWithin,
 
-		Auto
+	    OnGround,
+
+        Auto
 	}
 }

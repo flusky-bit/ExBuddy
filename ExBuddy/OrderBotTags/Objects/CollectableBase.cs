@@ -19,7 +19,7 @@
 		[XmlAttribute("LocalName")]
 		public string LocalName { get; set; }
 
-		#endregion
+		#endregion INamedItem Members
 
 		public override string ToString()
 		{

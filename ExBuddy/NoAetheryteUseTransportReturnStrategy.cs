@@ -1,6 +1,5 @@
 ﻿namespace ExBuddy
 {
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using ExBuddy.Helpers;
@@ -9,6 +8,7 @@
 	using ff14bot.Behavior;
 	using ff14bot.Managers;
 	using ff14bot.RemoteWindows;
+	using System.Threading.Tasks;
 
 	public class NoAetheryteUseTransportReturnStrategy : IReturnStrategy
 	{
@@ -30,13 +30,13 @@
 
 		public uint AetheryteId { get; set; }
 
-		#endregion
+		#endregion IAetheryteId Members
 
 		#region IZoneId Members
 
 		public ushort ZoneId { get; set; }
 
-		#endregion
+		#endregion IZoneId Members
 
 		public override string ToString()
 		{
@@ -82,6 +82,6 @@
 			return true;
 		}
 
-		#endregion
+		#endregion IReturnStrategy Members
 	}
 }

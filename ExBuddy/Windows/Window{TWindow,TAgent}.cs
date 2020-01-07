@@ -8,7 +8,7 @@ namespace ExBuddy.Windows
 		protected static TAgent Agent = new TAgent();
 
 		protected Window(string name)
-			: base(name) {}
+			: base(name) { }
 
 		public new static void Close()
 		{

@@ -1,12 +1,12 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System;
-	using System.Linq;
-	using System.Reflection;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Offsets;
 	using ff14bot;
 	using ff14bot.Managers;
+	using System;
+	using System.Linq;
+	using System.Reflection;
 
 	public sealed class GuildLeve : Window<GuildLeve>
 	{
@@ -15,14 +15,14 @@
 				.GetTypes()
 				.FirstOrDefault(
 					t =>
-						t.GetProperties(BindingFlags.Static | BindingFlags.Public).Count(f => f.PropertyType == typeof (LeveWork[])) == 1);
+						t.GetProperties(BindingFlags.Static | BindingFlags.Public).Count(f => f.PropertyType == typeof(LeveWork[])) == 1);
 
 		private static readonly PropertyInfo LevesPropertyInfo =
 			LeveManagerType.GetProperties(BindingFlags.Static | BindingFlags.Public)
-				.FirstOrDefault(f => f.PropertyType == typeof (LeveWork[]));
+				.FirstOrDefault(f => f.PropertyType == typeof(LeveWork[]));
 
 		public GuildLeve()
-			: base("GuildLeve") {}
+			: base("GuildLeve") { }
 
 		public static LeveWork[] ActiveLeves
 		{
@@ -36,7 +36,7 @@
 
 		public SendActionResult AcceptLeve(uint guildLeveId)
 		{
-			return TrySendAction(2, 3, 2, 4, guildLeveId);
+			return TrySendAction(2, 3, 3, 4, guildLeveId);
 		}
 
 		public static bool HasLeve(uint leveId)

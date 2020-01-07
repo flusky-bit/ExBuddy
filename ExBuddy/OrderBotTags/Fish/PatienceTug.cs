@@ -1,9 +1,9 @@
 namespace ExBuddy.OrderBotTags.Fish
 {
-	using System;
-	using System.ComponentModel;
 	using Clio.XmlEngine;
 	using ff14bot.Enums;
+	using System;
+	using System.ComponentModel;
 
 	[XmlElement("PatienceTug")]
 	public class PatienceTug : IEquatable<PatienceTug>
@@ -22,7 +22,7 @@ namespace ExBuddy.OrderBotTags.Fish
 			return MoochLevel == other.MoochLevel && TugType == other.TugType;
 		}
 
-		#endregion
+		#endregion IEquatable<PatienceTug> Members
 
 		public override string ToString()
 		{

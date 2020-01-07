@@ -1,12 +1,12 @@
 ﻿namespace ExBuddy.Navigation
 {
+	using Clio.Utilities;
+	using ExBuddy.Logging;
+	using ff14bot.Managers;
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Runtime.Caching;
-	using Clio.Utilities;
-	using ExBuddy.Logging;
-	using ff14bot.Managers;
 
 	[Flags]
 	public enum CollisionFlags
@@ -69,7 +69,8 @@
 		{
 			direction.Normalize();
 			forwardNormal = Forward = direction;
-			Forward *= forwardRange;
+		    //Logger.Instance.Verbose("Forward Y: " + Forward.Y);
+            Forward *= forwardRange;
 			Direction2D = new Vector3(direction.X, 0, direction.Z);
 			Direction2D.Normalize();
 			Position = position;
@@ -109,7 +110,7 @@
 			ForwardLeft.Normalize();
 			ForwardDown.Normalize();
 
-			var diagonalMagnitude = forwardRange/(float) Math.Cos(45.0f*Math.PI/180);
+			var diagonalMagnitude = forwardRange / (float)Math.Cos(45.0f * Math.PI / 180);
 			Right *= forwardRange;
 			Up *= forwardRange;
 			Left *= forwardRange;
@@ -127,9 +128,9 @@
 			var valueFound = false;
 
 			// Making the rays 1.5x as long as our detection range to ensure it is clear
-			var forwardRay = Position + Forward*1.5f;
-			var forwardRightRay = Position + ForwardRight*1.5f;
-			var forwardLeftRay = Position + ForwardLeft*1.5f;
+			var forwardRay = Position + Forward * 1.5f;
+			var forwardRightRay = Position + ForwardRight * 1.5f;
+			var forwardLeftRay = Position + ForwardLeft * 1.5f;
 			var forwardUpRay = Vector3.Zero;
 			var forwardDownRay = Vector3.Zero;
 			Vector3 hit;
@@ -166,8 +167,8 @@
 
 			if (!valueFound)
 			{
-				forwardUpRay = Position + ForwardUp*1.5f;
-				forwardDownRay = Position + ForwardDown*1.5f;
+				forwardUpRay = Position + ForwardUp * 1.5f;
+				forwardDownRay = Position + ForwardDown * 1.5f;
 
 				for (var i = 0.2f; i < 1; i += 0.2f)
 				{
@@ -201,14 +202,14 @@
 
 			if (!valueFound)
 			{
-				var upRay = Position + Up*1.5f;
-				var downRay = Position + Down*1.5f;
+				var upRay = Position + Up * 1.5f;
+				var downRay = Position + Down * 1.5f;
 
 				for (var i = 0.2f; i < 1; i += 0.2f)
 				{
 					if (!WorldManager.Raycast(Position, deviation = Vector3.Blend(forwardUpRay, upRay, i), out hit, out distances)
-					    && !previousFlightPoints.Any(fp => fp.FuzzyEquals(deviation))
-					    && !MemoryCache.Default.Contains(deviation.ToString()))
+						&& !previousFlightPoints.Any(fp => fp.FuzzyEquals(deviation))
+						&& !MemoryCache.Default.Contains(deviation.ToString()))
 					{
 						valueFound = true;
 						Flags |= CollisionFlags.ForwardUp;
@@ -232,8 +233,8 @@
 
 			if (!valueFound)
 			{
-				var leftRay = Position + Left*2;
-				var rightRay = Position + Right*2;
+				var leftRay = Position + Left * 2;
+				var rightRay = Position + Right * 2;
 
 				for (var i = 0.2f; i < 1; i += 0.2f)
 				{
@@ -274,7 +275,8 @@
 				travelDeviation = deviation;
 
 				Logger.Instance.Verbose("Direction of deviation: " + (Flags ^ CollisionFlags.Forward));
-			}
+                //Logger.Instance.Verbose("Deviation Location: " + deviation);
+            }
 
 			return valueFound;
 		}

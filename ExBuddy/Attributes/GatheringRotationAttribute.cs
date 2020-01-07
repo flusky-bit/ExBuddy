@@ -6,14 +6,14 @@ namespace ExBuddy.Attributes
 	public sealed class GatheringRotationAttribute : Attribute
 	{
 		public GatheringRotationAttribute(string name)
-			: this(name, 0, 0) {}
+			: this(name, 0, 0) { }
 
 		public GatheringRotationAttribute(string name, byte requiredTimeInSeconds, params ushort[] requiredGpBreakpoints)
 		{
 			Name = name;
 			RequiredGpBreakpoints = requiredGpBreakpoints != null && requiredGpBreakpoints.Length > 0
 				? requiredGpBreakpoints
-				: new ushort[] {0};
+				: new ushort[] { 0 };
 			RequiredTimeInSeconds = requiredTimeInSeconds;
 		}
 

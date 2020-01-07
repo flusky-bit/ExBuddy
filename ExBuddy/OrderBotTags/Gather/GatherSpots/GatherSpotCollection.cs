@@ -1,9 +1,9 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.GatherSpots
 {
-	using System.Collections;
-	using System.Collections.Generic;
 	using Clio.XmlEngine;
 	using ExBuddy.Interfaces;
+	using System.Collections;
+	using System.Collections.Generic;
 
 	[XmlElement("GatherSpots")]
 	public class GatherSpotCollection : IList<IGatherSpot>
@@ -23,7 +23,7 @@
 			return GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable Members
 
 		#region IEnumerable<IGatherSpot> Members
 
@@ -32,7 +32,7 @@
 			return Locations.GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable<IGatherSpot> Members
 
 		#region ICollection<IGatherSpot> Members
 
@@ -71,7 +71,7 @@
 			return Locations.Remove(item);
 		}
 
-		#endregion
+		#endregion ICollection<IGatherSpot> Members
 
 		#region IList<IGatherSpot> Members
 
@@ -96,6 +96,6 @@
 			Locations.RemoveAt(index);
 		}
 
-		#endregion
+		#endregion IList<IGatherSpot> Members
 	}
 }

@@ -1,9 +1,5 @@
 namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -15,6 +11,10 @@ namespace ExBuddy.OrderBotTags.Behaviors
 	using ff14bot.Interfaces;
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
+	using System.ComponentModel;
+	using System.Diagnostics;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExFlyTo")]
 	[XmlElement("ExFlyTo")]
@@ -54,7 +54,7 @@ namespace ExBuddy.OrderBotTags.Behaviors
 		{
 			while (!ExProfileBehavior.Me.IsMounted && Behaviors.ShouldContinue)
 			{
-				if (MountId == 0 || !await CommonTasks.MountUp((uint) MountId))
+				if (MountId == 0 || !await CommonTasks.MountUp((uint)MountId))
 				{
 					await CommonTasks.MountUp();
 				}
@@ -146,7 +146,7 @@ namespace ExBuddy.OrderBotTags.Behaviors
 					{
 						Logger.Verbose(Localization.Localization.ExFlyTo_MoveToWaypoint, flightPath.Current);
 						if (!ExBuddySettings.Instance.VerboseLogging
-						    && (flightPath.Index%5 == 0 || flightPath.Index == flightPath.Count - 1))
+							&& (flightPath.Index % 5 == 0 || flightPath.Index == flightPath.Count - 1))
 						{
 							Logger.Info(Localization.Localization.ExFlyTo_MoveToWaypoint2, flightPath.Index + 1, flightPath.Current);
 						}
@@ -164,7 +164,6 @@ namespace ExBuddy.OrderBotTags.Behaviors
 					{
 						await MoveToWithinRadius(flightPath.Current);
 					}
-					
 				} while (flightPath.Next());
 
 				flightPath.Reset();
@@ -174,7 +173,7 @@ namespace ExBuddy.OrderBotTags.Behaviors
 				Logger.Error(Localization.Localization.ExFlyTo_NoViablePath, Target);
 			}
 
-			if (ForceLanding)
+			if (ForceLanding && !MovementManager.IsDiving)
 			{
 				await ForceLand();
 			}
@@ -192,7 +191,7 @@ namespace ExBuddy.OrderBotTags.Behaviors
 		[XmlAttribute("MountId")]
 		public int MountId { get; set; }
 
-		#endregion
+		#endregion IFlightMovementArgs Members
 
 		#region IFlightNavigationArgs Members
 
@@ -212,6 +211,6 @@ namespace ExBuddy.OrderBotTags.Behaviors
 		[XmlAttribute("Smoothing")]
 		public float Smoothing { get; set; }
 
-		#endregion
+		#endregion IFlightNavigationArgs Members
 	}
 }

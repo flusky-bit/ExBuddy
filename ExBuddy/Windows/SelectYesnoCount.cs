@@ -5,7 +5,7 @@
 	public sealed class SelectYesnoCount : Window<SelectYesnoCount>
 	{
 		public SelectYesnoCount()
-			: base("SelectYesnoCount") {}
+			: base("SelectYesnoCount") { }
 
 		public SendActionResult Yes()
 		{

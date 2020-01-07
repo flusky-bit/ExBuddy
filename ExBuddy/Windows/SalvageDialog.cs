@@ -1,18 +1,18 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Threading.Tasks;
 	using ExBuddy.Helpers;
 	using ExBuddy.Logging;
 	using ff14bot.Behavior;
 	using ff14bot.Enums;
 	using ff14bot.Managers;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading.Tasks;
 
 	public sealed class SalvageDialog : Window<SalvageDialog>
 	{
 		public SalvageDialog()
-			: base("SalvageDialog") {}
+			: base("SalvageDialog") { }
 
 		public static async Task<bool> DesynthesizeAllItems(
 			IEnumerable<BagSlot> bagSlots,
@@ -77,7 +77,7 @@
 					DesynthesizeAllItems(
 						slots.Where(
 							i =>
-								i.Item != null && classJobType == (ClassJobType) i.Item.RepairClass
+								i.Item != null && classJobType == (ClassJobType)i.Item.RepairClass
 								&& (!nqOnly || (!i.IsHighQuality && !i.IsCollectable))),
 						maxWait,
 						desynthesizeUniqueUntradeable);

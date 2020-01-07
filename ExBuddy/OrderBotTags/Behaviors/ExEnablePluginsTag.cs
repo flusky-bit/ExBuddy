@@ -1,16 +1,15 @@
-﻿
-#pragma warning disable 1998
+﻿#pragma warning disable 1998
 
 namespace ExBuddy.OrderBotTags.Behaviors
 {
+	using Clio.XmlEngine;
+	using ExBuddy.Attributes;
+	using ff14bot.Managers;
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading.Tasks;
 	using System.Windows.Media;
-	using Clio.XmlEngine;
-	using ExBuddy.Attributes;
-	using ff14bot.Managers;
 
 	[LoggerName("ExEnablePlugins")]
 	[XmlElement("ExEnablePlugins")]
@@ -32,12 +31,12 @@ namespace ExBuddy.OrderBotTags.Behaviors
 			{
 				if (Names == null)
 				{
-					return new string[] {};
+					return new string[] { };
 				}
 
 				return namesList
-				       ??
-				       (namesList = Names.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray());
+					   ??
+					   (namesList = Names.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray());
 			}
 		}
 

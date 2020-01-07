@@ -49,6 +49,6 @@
 	public class OffsetCN : Offset
 	{
 		public OffsetCN(string pattern, bool isoffset = false, int modifier = 0, bool multresults = false)
-			: base(pattern, isoffset, modifier, multresults) {}
+			: base(pattern, isoffset, modifier, multresults) { }
 	}
 }

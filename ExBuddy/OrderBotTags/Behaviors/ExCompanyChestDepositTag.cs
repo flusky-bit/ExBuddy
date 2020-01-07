@@ -1,12 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -19,6 +12,13 @@
 	using ff14bot.Enums;
 	using ff14bot.Managers;
 	using ff14bot.NeoProfiles;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Diagnostics;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExCompanyChestDeposit")]
 	[XmlElement("ExCompanyChestDeposit")]
@@ -122,7 +122,7 @@
 						chestBagSlots.Where(bs => bs.IsFilled)
 							.GroupBy(bs => bs.TrueItemId)
 							.Select(
-								g => new {g.Key, BagSlots = g.Where(bs => !bs.IsFullStack(true)).OrderByDescending(bs => bs.Count).ToList()})
+								g => new { g.Key, BagSlots = g.Where(bs => !bs.IsFullStack(true)).OrderByDescending(bs => bs.Count).ToList() })
 							.ToArray();
 
 					foreach (var bagGroup in bagGroups.Where(g => g.BagSlots.Count > 1))
@@ -188,7 +188,7 @@
 						InventoryManager.FilledInventoryAndArmory.Where(
 							bs => itemId == bs.RawItemId && bs.SpiritBond < float.Epsilon && !bs.Item.Untradeable)
 							.GroupBy(bs => bs.TrueItemId)
-							.Select(g => new {g.Key, BagSlots = g.OrderBy(bs => bs.Count).ToList()})
+							.Select(g => new { g.Key, BagSlots = g.OrderBy(bs => bs.Count).ToList() })
 							.ToArray();
 
 					var chestSlots =
@@ -201,7 +201,7 @@
 									bag => bag.Where(bagSlot => !bagSlot.IsFilled || (itemId == bagSlot.RawItemId && !bagSlot.IsFullStack(true))))
 								.OrderByDescending(bs => bs.Count));
 
-					var groups = chestSlots.GroupBy(bs => bs.TrueItemId).Select(g => new {g.Key, BagSlots = g.ToArray()}).ToArray();
+					var groups = chestSlots.GroupBy(bs => bs.TrueItemId).Select(g => new { g.Key, BagSlots = g.ToArray() }).ToArray();
 
 					foreach (var sourceBags in myBagSlots)
 					{
@@ -271,9 +271,9 @@
 				"Moving {0} {1} from [{2},{3}] to [{4},{5}]",
 				Math.Min(99 - destination.Count, source.Count),
 				source.IsHighQuality ? source.EnglishName + " HQ" : source.EnglishName,
-				(int) source.BagId,
+				(int)source.BagId,
 				source.Slot,
-				(int) destination.BagId,
+				(int)destination.BagId,
 				destination.Slot);
 
 			source.Move(destination);
@@ -293,6 +293,6 @@
 		[XmlAttribute("NpcLocation")]
 		Vector3 IInteractWithNpc.Location { get; set; }
 
-		#endregion
+		#endregion CustomLocationInfo
 	}
 }

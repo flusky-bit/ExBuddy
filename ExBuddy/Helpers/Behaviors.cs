@@ -1,25 +1,22 @@
-
 #pragma warning disable 1998
 
 namespace ExBuddy.Helpers
 {
-	using System;
-	using System.Linq;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using ExBuddy.Interfaces;
 	using ExBuddy.Logging;
-	using ExBuddy.Navigation;
 	using ff14bot;
 	using ff14bot.Behavior;
 	using ff14bot.Enums;
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
 	using ff14bot.Settings;
-#if RB_CN
-    using ActionManager = ff14bot.Managers.Actionmanager;
-#endif
+	using System;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using ff14bot.Pathing;
+	using Navigation;
 
     public static class Behaviors
 	{
@@ -48,15 +45,15 @@ namespace ExBuddy.Helpers
 			{
 				if (MovementManager.IsFlying)
 				{
-					if (Navigator.PlayerMover is FlightEnabledSlideMover)
-					{
-						Navigator.Stop();
-					}
-					else
-					{
-						MovementManager.StartDescending();
-					}
-				}
+				    if (Navigator.PlayerMover is FlightEnabledSlideMover)
+				    {
+				        Navigator.Stop();
+				    }
+				    else
+				    {
+				        MovementManager.StartDescending();
+				    }
+                }
 				else
 				{
 					ActionManager.Dismount();
@@ -119,6 +116,7 @@ namespace ExBuddy.Helpers
 						Slot = 2
 					};
 					break;
+
 				default:
 					strategy = new NoOpReturnStrategy();
 					break;
@@ -129,45 +127,43 @@ namespace ExBuddy.Helpers
 
 		public static async Task<bool> Mount(Vector3? destination = null, uint mountId = 0)
 		{
-			if (await ShouldMount(destination))
-			{
-				uint flightSpecificMountId = 0;
-				if (mountId == 0)
-				{
-					var playerMover = Navigator.PlayerMover as IFlightEnabledPlayerMover;
-					if (playerMover != null)
-					{
-						flightSpecificMountId = (uint) playerMover.FlightMovementArgs.MountId;
-					}
-				}
+		    if (!await ShouldMount(destination)) return true;
+		    uint flightSpecificMountId = 0;
+		    if (mountId == 0)
+		    {
+		        var playerMover = Navigator.PlayerMover as IFlightEnabledPlayerMover;
+		        if (playerMover != null)
+		        {
+		            flightSpecificMountId = (uint)playerMover.FlightMovementArgs.MountId;
+		        }
+		    }
 
-				var ticks = 0;
-				while (!Core.Player.IsMounted && ticks++ < 10 && Behaviors.ShouldContinue)
-				{
-					if (WorldManager.CanFly && flightSpecificMountId > 0)
-					{
-						if (!await CommonTasks.MountUp(flightSpecificMountId))
-						{
-							await CommonTasks.MountUp();
-						}
+		    var ticks = 0;
+		    while (!Core.Player.IsMounted && ticks++ < 10 && Behaviors.ShouldContinue)
+		    {
+		        if (WorldManager.CanFly && flightSpecificMountId > 0)
+		        {
+		            if (!await CommonTasks.MountUp(flightSpecificMountId))
+		            {
+		                await CommonTasks.MountUp();
+		            }
 
-						await Coroutine.Yield();
-						if (Core.Player.IsMounted)
-						{
-							break;
-						}
-					}
+		            await Coroutine.Yield();
+		            if (Core.Player.IsMounted)
+		            {
+		                break;
+		            }
+		        }
 
-					if (mountId == 0 || !await CommonTasks.MountUp(mountId))
-					{
-						await CommonTasks.MountUp();
-					}
+		        if (mountId == 0 || !await CommonTasks.MountUp(mountId))
+		        {
+		            await CommonTasks.MountUp();
+		        }
 
-					await Coroutine.Yield();
-				}
-			}
+		        await Coroutine.Yield();
+		    }
 
-			return true;
+		    return true;
 		}
 
 		public static async Task<bool> MoveTo(
@@ -189,7 +185,7 @@ namespace ExBuddy.Helpers
 			Func<float, float, bool> stopCallback = null,
 			bool dismountAtDestination = false)
 		{
-			await Mount(destination, mountId);
+			await Mount(destination, CharacterSettings.Instance.MountId);
 			await MoveToNoMount(destination, useMesh, radius, name, stopCallback);
 			return !dismountAtDestination || await Dismount();
 		}
@@ -213,23 +209,23 @@ namespace ExBuddy.Helpers
 
 			var sprintDistance = Math.Min(20.0f, CharacterSettings.Instance.MountDistance);
 			float distance;
-			if (useMesh)
+            if (useMesh)
 			{
 				var moveResult = MoveResult.GeneratingPath;
 				while (Behaviors.ShouldContinue
-				       && (!stopCallback(distance = Core.Player.Location.Distance3D(destination), radius)
-				           || stopCallback == DontStopInRange) && !(moveResult.IsDoneMoving()))
+					   && (!stopCallback(distance = Core.Player.Location.Distance3D(destination), radius)
+						   || stopCallback == DontStopInRange) && !moveResult.IsDoneMoving())
 				{
-					moveResult = Navigator.MoveTo(destination, name);
-					await Coroutine.Yield();
+                    moveResult = Flightor.MoveTo(new FlyToParameters(destination));
+				    //moveResult = Navigator.MoveTo(new MoveToParameters(destination));
+
+                    await Coroutine.Yield();
 
 					if (distance > sprintDistance)
 					{
 						await Sprint();
 					}
 				}
-
-				Navigator.Stop();
 			}
 			else
 			{
@@ -250,44 +246,51 @@ namespace ExBuddy.Helpers
 			return true;
 		}
 
-		public static async Task<bool> MoveToPointWithin(
+		public static async Task<bool> MoveToOnGround(
 			this HotSpot hotspot,
 			uint mountId = 0,
 			bool dismountAtDestination = false)
 		{
-			return await MoveToPointWithin(hotspot.XYZ, hotspot.Radius, mountId, hotspot.Name, dismountAtDestination);
+			return await MoveToOnGround(hotspot.XYZ, hotspot.Radius, mountId, hotspot.Name, dismountAtDestination);
 		}
 
-		public static async Task<bool> MoveToPointWithin(
+		public static async Task<bool> MoveToOnGround(
 			this Vector3 destination,
-			float radius,
+			float radius = 2.0f,
 			uint mountId = 0,
 			string name = null,
 			bool dismountAtDestination = false)
 		{
-			await Mount(destination, mountId);
-			await MoveToPointWithinNoMount(destination, radius, name);
+			await Mount(destination, CharacterSettings.Instance.MountId);
+			await MoveToOnGroundNoMount(destination, radius, name);
 			return !dismountAtDestination || await Dismount();
 		}
 
-		public static async Task<bool> MoveToPointWithinNoMount(this Vector3 destination, float radius, string name = null)
+		public static async Task<bool> MoveToOnGroundNoMount(
+            this Vector3 destination, 
+            float radius, 
+            string name = null,
+		    Func<float, float, bool> stopCallback = null)
 		{
-			var sprintDistance = Math.Min(20.0f, CharacterSettings.Instance.MountDistance);
+		    stopCallback = stopCallback ?? ((d, r) => d <= r);
 
-			var moveResult = MoveResult.GeneratingPath;
-			while (Behaviors.ShouldContinue && !(moveResult.IsDoneMoving()))
-			{
-				moveResult = Navigator.MoveToPointWithin(destination, radius, name);
-				await Coroutine.Yield();
+            var sprintDistance = Math.Min(20.0f, CharacterSettings.Instance.MountDistance);
+		    float distance;
+            var moveResult = MoveResult.GeneratingPath;
+		    while (Behaviors.ShouldContinue
+		           && (!stopCallback(distance = Core.Player.Location.Distance3D(destination), radius)
+		               || stopCallback == DontStopInRange) && !moveResult.IsDoneMoving())
+            {
+                //moveResult = Flightor.MoveTo(new FlyToParameters(destination));
+			    moveResult = MovementManager.IsDiving ? Flightor.MoveTo(new FlyToParameters(destination)) : Navigator.MoveTo(new MoveToParameters(destination));
 
-				var distance = Core.Player.Location.Distance3D(destination);
+                await Coroutine.Yield();
+                
 				if (distance > sprintDistance)
 				{
 					await Sprint();
 				}
 			}
-
-			Navigator.Stop();
 
 			return true;
 		}
@@ -332,8 +335,7 @@ namespace ExBuddy.Helpers
 
 		public static async Task<bool> Sprint(int timeout = 500)
 		{
-			if (ActionManager.IsSprintReady && !Core.Player.IsCasting && !Core.Player.IsMounted && Core.Player.CurrentTP == 1000
-			    && MovementManager.IsMoving)
+			if (ActionManager.IsSprintReady && !Core.Player.IsCasting && !Core.Player.IsMounted && MovementManager.IsMoving)
 			{
 				ActionManager.Sprint();
 
@@ -378,7 +380,7 @@ namespace ExBuddy.Helpers
 			}
 
 			await Coroutine.Wait(5000, () => CommonBehaviors.IsLoading);
-			await Coroutine.Wait(10000, () => !CommonBehaviors.IsLoading);
+			await Coroutine.Wait(100000, () => !CommonBehaviors.IsLoading);
 
 			return true;
 		}
@@ -404,7 +406,7 @@ namespace ExBuddy.Helpers
 				return false;
 			}
 
-			return await TeleportTo((ushort) zoneId, aetheryteId);
+			return await TeleportTo((ushort)zoneId, aetheryteId);
 		}
 
 		public static async Task<bool> TeleportTo(this ITeleportLocation teleportLocation)
