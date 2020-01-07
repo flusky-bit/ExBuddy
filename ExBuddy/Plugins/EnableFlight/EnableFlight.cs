@@ -1,5 +1,4 @@
-﻿
-#pragma warning disable 1998
+﻿#pragma warning disable 1998
 
 namespace ExBuddy.Plugins.EnableFlight
 {
@@ -20,6 +19,7 @@ namespace ExBuddy.Plugins.EnableFlight
 	using ff14bot.Navigation;
 	using ff14bot.RemoteWindows;
 	using TreeSharp;
+	using ff14bot.Pathing.Service_Navigation;
 
 	[LoggerName("EnableFlight")]
 	public class EnableFlight : ExBotPlugin<EnableFlight>
@@ -36,7 +36,6 @@ namespace ExBuddy.Plugins.EnableFlight
 		{
 			get { return Localization.Localization.EnableFlight_PluginName; }
 		}
-        
 
 		protected override Color Info
 		{
@@ -73,15 +72,16 @@ namespace ExBuddy.Plugins.EnableFlight
 
 		private void DisposeNav()
 		{
-			var nav = Navigator.NavigationProvider as GaiaNavigator;
+			var nav = Navigator.NavigationProvider as ServiceNavigationProvider;
+
 			if (nav != null)
 			{
-				Logger.Info("Disposing the GaiaNavigator");
+				Logger.Info("Disposing the ServiceNavigationProvider");
 				try
 				{
 					nav.Dispose();
 				}
-				catch (NullReferenceException) {}
+				catch (NullReferenceException) { }
 				finally
 				{
 					Navigator.NavigationProvider = null;
@@ -145,7 +145,7 @@ namespace ExBuddy.Plugins.EnableFlight
 				var settings = EnableFlightSettings.Instance;
 				navigator = new FlightEnabledNavigator(
 					Navigator.NavigationProvider,
-					new FlightEnabledSlideMover(Navigator.PlayerMover, new FlightMovementArgs {MountId = settings.MountId}),
+					new FlightEnabledSlideMover(Navigator.PlayerMover, new FlightMovementArgs { MountId = settings.MountId }),
 					new FlightNavigationArgs
 					{
 						ForcedAltitude = settings.ForcedAltitude,
@@ -176,7 +176,7 @@ namespace ExBuddy.Plugins.EnableFlight
 
 		// ReSharper disable once UnusedParameter.Local
 		public EnableFlightSettings(string path)
-			: base(Path.Combine(JsonSettings.SettingsPath, "EnableFlight.json")) {}
+			: base(Path.Combine(JsonSettings.SettingsPath, "EnableFlight.json")) { }
 
 		[DefaultValue(6.0f)]
 		public float ForcedAltitude { get; set; }

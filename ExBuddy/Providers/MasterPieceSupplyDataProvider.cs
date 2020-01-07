@@ -1,10 +1,10 @@
 ﻿namespace ExBuddy.Providers
 {
+	using ff14bot.Managers;
 	using System;
 	using System.IO;
 	using System.Linq;
 	using System.Xml.Linq;
-	using ff14bot.Managers;
 
 	public class MasterPieceSupplyDataProvider
 	{
@@ -73,11 +73,7 @@
 			// ReSharper disable once PossibleNullReferenceException
 			if (uint.TryParse(result.Element("S").Value, out index))
 			{
-#if RB_CN
 				return 103 - index;
-#else
-				return 103 - index;
-#endif
 			}
 
 			return null;

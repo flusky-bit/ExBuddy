@@ -2,5 +2,5 @@
 {
 	using System.Collections.Generic;
 
-	public class LocationIndex : Dictionary<string, Location> {}
+	public class LocationIndex : Dictionary<string, Location> { }
 }

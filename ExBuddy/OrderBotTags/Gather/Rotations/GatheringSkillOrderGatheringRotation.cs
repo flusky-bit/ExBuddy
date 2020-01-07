@@ -1,11 +1,11 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Collections.Generic;
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ff14bot;
 	using ff14bot.Managers;
 	using ff14bot.Objects;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
 
 	// Purposely not putting attribute or interface for overriding, This is for backwards compatibility only override turned off automatically.
 	public sealed class GatheringSkillOrderGatheringRotation : SmartGatheringRotation
@@ -32,9 +32,9 @@
 				// Ignoring times to cast.... no skills would ever be cast more than once.
 				SpellData spellData;
 
-				if (!Actionmanager.CurrentActions.TryGetValue(gatheringSkill.SpellName, out spellData))
+				if (!ActionManager.CurrentActions.TryGetValue(gatheringSkill.SpellName, out spellData))
 				{
-					Actionmanager.CurrentActions.TryGetValue(gatheringSkill.SpellId, out spellData);
+					ActionManager.CurrentActions.TryGetValue(gatheringSkill.SpellId, out spellData);
 				}
 
 				if (spellData == null)

@@ -1,13 +1,13 @@
 ﻿namespace ExBuddy.Agents
 {
-	using System;
 	using ExBuddy.Offsets;
 	using ff14bot;
+	using System;
 
 	public sealed class Desynthesis : Agent<Desynthesis>
 	{
 		public Desynthesis()
-			: base(114) {}
+			: base(114) { }
 
 		public IntPtr CurrentBagSlot
 		{

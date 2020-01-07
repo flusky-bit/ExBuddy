@@ -1,13 +1,13 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
+	using System.Threading.Tasks;
 
 	public sealed class FreeCompanyChest : Window<FreeCompanyChest>
 	{
 		public FreeCompanyChest()
-			: base("FreeCompanyChest") {}
+			: base("FreeCompanyChest") { }
 
 		public SendActionResult CrystalsSection()
 		{
@@ -40,7 +40,7 @@
 			var removeAttempts = 0;
 			var inputNumericWindow = new InputNumeric();
 			while (result != SendActionResult.Success && !inputNumericWindow.IsValid && removeAttempts++ < attempts
-			       && Behaviors.ShouldContinue)
+				   && Behaviors.ShouldContinue)
 			{
 				result = RemoveItemBySlotIndex(index);
 
@@ -55,7 +55,7 @@
 			result = SendActionResult.None;
 			removeAttempts = 0;
 			while (result != SendActionResult.Success && inputNumericWindow.IsValid && removeAttempts++ < attempts
-			       && Behaviors.ShouldContinue)
+				   && Behaviors.ShouldContinue)
 			{
 				result = inputNumericWindow.Count(count);
 

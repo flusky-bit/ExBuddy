@@ -1,7 +1,5 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
@@ -10,8 +8,11 @@
 	using ff14bot.AClasses;
 	using ff14bot.Behavior;
 	using ff14bot.Managers;
+	using System;
+	using System.Threading.Tasks;
+    using ff14bot.RemoteWindows;
 
-	public abstract class Window<TWindow>
+    public abstract class Window<TWindow>
 		where TWindow : Window<TWindow>, new()
 	{
 		// ReSharper disable once StaticMemberInGenericType
@@ -66,29 +67,31 @@
 
 		public virtual async Task<SendActionResult> CloseInstance(ushort interval = 250)
 		{
-			await Behaviors.Sleep(interval/2);
+			await Behaviors.Sleep(interval / 2);
 
 			Logger.Instance.Verbose(Localization.Localization.Window_Attempting, Name);
 
 			var result = TrySendAction(1, 3, uint.MaxValue);
 
-			await Refresh(interval/2, false);
+			await Refresh(interval / 2, false);
 
 			if (result == SendActionResult.Success)
 			{
 				if (!IsValid)
 				{
 					Logger.Instance.Verbose(Localization.Localization.Window_Closed, Name);
-					return result;
+                    await CloseSelectString();
+                    return result;
 				}
 
-				Logger.Instance.Verbose(Localization.Localization.Window_WaitToClose, interval*2, Name);
-				await Refresh(interval*2, false);
+				Logger.Instance.Verbose(Localization.Localization.Window_WaitToClose, interval * 2, Name);
+				await Refresh(interval * 2, false);
 
 				if (!IsValid)
 				{
 					Logger.Instance.Verbose(Localization.Localization.Window_Closed, Name);
-					return result;
+                    await CloseSelectString();
+                    return result;
 				}
 
 				Logger.Instance.Verbose(Localization.Localization.Window_UnexpectedResult, Name);
@@ -101,9 +104,24 @@
 			}
 
 			return result;
-		}
+        }
 
-		public virtual async Task<bool> CloseInstanceGently(byte maxTicks = 10, ushort interval = 200)
+        private async Task<bool> CloseSelectString(ushort interval = 250)
+        {
+            await Coroutine.Wait(1000, () => SelectString.IsOpen);
+
+            if (SelectString.IsOpen)
+            {
+                SelectString.ClickSlot((uint) SelectString.LineCount - 1);
+            }
+
+            await Coroutine.Wait(1000, () => !SelectString.IsOpen);
+
+            return !SelectString.IsOpen;
+        }
+
+
+        public virtual async Task<bool> CloseInstanceGently(byte maxTicks = 10, ushort interval = 200)
 		{
 			if (!IsValid)
 			{
@@ -139,20 +157,15 @@
 		{
 			updateWindows();
 			control = RaptureAtkUnitManager.GetWindowByName(Name);
-			return (TWindow) this;
+			return (TWindow)this;
 		}
 
 		public async Task<bool> Refresh(int timeoutMs, bool valid = true)
 		{
 			return await Coroutine.Wait(timeoutMs, () => Refresh().IsValid == valid);
 		}
-
-#if RB_X64
+        
         public virtual SendActionResult TrySendAction(int pairCount, params ulong[] param)
-#else
-		public virtual SendActionResult TrySendAction(int pairCount, params uint[] param)
-#endif
-
 		{
 			return Control.TrySendAction(pairCount, param);
 		}

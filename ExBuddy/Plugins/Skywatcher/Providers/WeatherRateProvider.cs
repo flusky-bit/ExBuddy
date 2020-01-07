@@ -1,11 +1,11 @@
 ﻿namespace ExBuddy.Plugins.Skywatcher.Providers
 {
-	using System;
-	using System.IO;
-	using System.Linq;
 	using ExBuddy.Plugins.Skywatcher.Objects;
 	using ff14bot.Managers;
 	using Newtonsoft.Json;
+	using System;
+	using System.IO;
+	using System.Linq;
 
 	internal class WeatherRateProvider
 	{
@@ -46,7 +46,7 @@
 			{
 				var serializer = new JsonSerializer();
 
-				data = (WeatherRateIndex) serializer.Deserialize(file, typeof (WeatherRateIndex));
+				data = (WeatherRateIndex)serializer.Deserialize(file, typeof(WeatherRateIndex));
 			}
 		}
 

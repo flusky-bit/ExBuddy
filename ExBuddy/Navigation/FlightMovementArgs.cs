@@ -10,6 +10,6 @@
 
 		public int MountId { get; set; }
 
-		#endregion
+		#endregion IFlightMovementArgs Members
 	}
 }

@@ -1,10 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Linq;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
 	using ExBuddy.Attributes;
@@ -12,6 +7,11 @@
 	using ExBuddy.Helpers;
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExMoveTo")]
 	[XmlElement("ExMoveTo")]
@@ -72,7 +72,7 @@
 				var locations = new List<HotSpot>(HotSpots);
 				if (Location != Vector3.Zero)
 				{
-					locations.Add(new HotSpot(Location, Distance) {Name = Name});
+					locations.Add(new HotSpot(Location, Distance) { Name = Name });
 				}
 
 				destination = locations.Shuffle().First();
@@ -86,7 +86,7 @@
 					Type = MoveToType.StopWithinRange;
 				}
 
-				destination = new HotSpot(Location, Distance) {Name = Name};
+				destination = new HotSpot(Location, Distance) { Name = Name };
 			}
 
 			var name = !string.IsNullOrWhiteSpace(destination.Name) ? "[" + destination.Name + "] " : string.Empty;
@@ -98,10 +98,15 @@
 				case MoveToType.StopWithinRange:
 					await destination.MoveTo(UseMesh);
 					break;
-				case MoveToType.RandomPointWithin:
-					await destination.MoveToPointWithin();
-					break;
-			}
+
+			    case MoveToType.RandomPointWithin:
+			        await destination.MoveTo(UseMesh);
+			        break;
+
+			    case MoveToType.OnGround:
+			        await destination.MoveToOnGround();
+			        break;
+            }
 
 			return isDone = true;
 		}

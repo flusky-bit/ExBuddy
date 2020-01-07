@@ -1,13 +1,13 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Threading.Tasks;
 	using Attributes;
 	using Enumerations;
-	using Helpers;
-	using Interfaces;
 	using ff14bot;
 	using ff14bot.Managers;
-    	
+	using Helpers;
+	using Interfaces;
+	using System.Threading.Tasks;
+
 	//Name, RequiredTime, RequiredGpBreakpoints
 	[GatheringRotation("YieldAndQuality", 25, 700, 650, 600, 500, 0)]
 	public class YieldAndQualityGatheringRotation : SmartGatheringRotation, IGetOverridePriority
@@ -27,7 +27,7 @@
 			}
 
 			if (tag.GatherIncrease == GatherIncrease.YieldAndQuality
-			    || (tag.GatherIncrease == GatherIncrease.Auto && Core.Player.ClassLevel >= 40 && Core.Player.CurrentGP >= 650))
+				|| (tag.GatherIncrease == GatherIncrease.Auto && Core.Player.ClassLevel >= 40 && Core.Player.CurrentGP >= 650))
 			{
 				return 9001;
 			}
@@ -35,7 +35,7 @@
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{
@@ -51,19 +51,19 @@
 					{
 						await tag.Cast(Ability.IncreaseGatherQuality10);
 
-                        if (Core.Player.CurrentGP >= 100 && tag.GatherItem.Chance < 95)
-                        {
-                            await tag.Cast(Ability.IncreaseGatherChance15);
-                        }
-                        else
-                        {
-                            if (Core.Player.CurrentGP >= 50 && tag.GatherItem.Chance < 100)
-                            {
-                                await tag.Cast(Ability.IncreaseGatherChance5);
-                            }
-                        }
+						if (Core.Player.CurrentGP >= 100 && tag.GatherItem.Chance < 95)
+						{
+							await tag.Cast(Ability.IncreaseGatherChance15);
+						}
+						else
+						{
+							if (Core.Player.CurrentGP >= 50 && tag.GatherItem.Chance < 100)
+							{
+								await tag.Cast(Ability.IncreaseGatherChance5);
+							}
+						}
 
-                        return await base.ExecuteRotation(tag);
+						return await base.ExecuteRotation(tag);
 					}
 				}
 			}

@@ -1,9 +1,9 @@
 namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System;
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
 	using ff14bot.Managers;
+	using System;
 
 	[GatheringRotation("Map", 8)]
 	public class MapGatheringRotation : GatheringRotation, IGetOverridePriority
@@ -32,6 +32,6 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return 10000;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 	}
 }

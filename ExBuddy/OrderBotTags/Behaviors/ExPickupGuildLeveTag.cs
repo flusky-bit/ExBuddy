@@ -1,11 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -15,6 +9,12 @@
 	using ExBuddy.Windows;
 	using ff14bot;
 	using ff14bot.RemoteWindows;
+	using System;
+	using System.ComponentModel;
+	using System.Diagnostics;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
 	[LoggerName("ExGuildLeve")]
 	[XmlElement("ExPickupGuildLeve")]
@@ -179,6 +179,6 @@
 		[XmlAttribute("NpcId")]
 		public uint NpcId { get; set; }
 
-		#endregion
+		#endregion IInteractWithNpc Members
 	}
 }

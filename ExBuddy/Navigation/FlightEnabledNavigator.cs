@@ -1,31 +1,48 @@
 ﻿namespace ExBuddy.Navigation
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Runtime.Caching;
-	using System.Threading;
-	using System.Threading.Tasks;
-	using System.Windows.Media;
-	using Buddy.Coroutines;
 	using Clio.Common;
 	using Clio.Utilities;
-	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
 	using ExBuddy.Logging;
 	using ff14bot;
 	using ff14bot.Enums;
-	using ff14bot.Interfaces;
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
-	using NeoGaia.ConnectionHandler;
+	using ff14bot.Pathing;
+	using ff14bot.Pathing.Service_Navigation;
+	using ff14bot.ServiceClient;
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.Runtime.Caching;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 
-	[LoggerName("FlightNav")]
-	public sealed class FlightEnabledNavigator : LogColors, INavigationProvider, IDisposable
+	public class FlightEnabledNavigatorLogColors : LogColors
+	{
+		#region ILogColors
+
+		public override Color Error
+		{
+			get { return Colors.Red; }
+		}
+
+		public override Color Info
+		{
+			get { return Colors.SkyBlue; }
+		}
+
+		public override Color Warn
+		{
+			get { return Colors.PaleVioletRed; }
+		}
+
+		#endregion ILogColors
+	}
+
+	public sealed class FlightEnabledNavigator : WrappingNavigationProvider, IDisposable
 	{
 		private readonly IFlightNavigationArgs flightNavigationArgs;
-
-		private readonly INavigationProvider innerNavigator;
 
 		private readonly Logger logger;
 
@@ -43,16 +60,15 @@
 
 		private Vector3 requestedDestination;
 
-		public FlightEnabledNavigator(INavigationProvider innerNavigator)
-			: this(innerNavigator, new FlightEnabledSlideMover(Navigator.PlayerMover), new FlightNavigationArgs()) {}
+		public FlightEnabledNavigator(NavigationProvider innerNavigator)
+			: this(innerNavigator, new FlightEnabledSlideMover(Navigator.PlayerMover), new FlightNavigationArgs()) { }
 
 		public FlightEnabledNavigator(
-			INavigationProvider innerNavigator,
+			NavigationProvider innerNavigator,
 			IFlightEnabledPlayerMover playerMover,
-			IFlightNavigationArgs flightNavigationArgs)
+			IFlightNavigationArgs flightNavigationArgs) : base(innerNavigator)
 		{
-			logger = new Logger(this);
-			this.innerNavigator = innerNavigator;
+			logger = new Logger(new FlightEnabledNavigatorLogColors(), "FlightNav");
 			this.playerMover = playerMover;
 			this.flightNavigationArgs = flightNavigationArgs;
 			Navigator.NavigationProvider = this;
@@ -63,14 +79,14 @@
 
 		public FlightPath CurrentPath { get; internal set; }
 
-		public override Color Info
-		{
-			get { return Colors.SkyBlue; }
-		}
-
 		public double PathPrecisionSqr
 		{
-			get { return PathPrecision*PathPrecision; }
+			get { return MovementManager.IsDiving ? 1.0 : 4.0; }
+		}
+
+		public double PathPrecision
+		{
+			get { return MovementManager.IsDiving ? 1.0 : 2.0; }
 		}
 
 		public bool VerboseLogging { get; set; }
@@ -83,13 +99,13 @@
 			{
 				disposed = true;
 				logger.Verbose(Localization.Localization.FlightEnabledNavigator_Dispose);
-				Navigator.NavigationProvider = innerNavigator;
+				Navigator.NavigationProvider = Original;
 				pathGeneratorStopwatch.Stop();
 				playerMover.Dispose();
 			}
 		}
 
-		#endregion
+		#endregion IDisposable Members
 
 		public static Vector3 Lerp(Vector3 value1, Vector3 value2, float amount)
 		{
@@ -99,19 +115,14 @@
 				MathEx.Lerp(value1.Z, value2.Z, amount));
 		}
 
-		public static explicit operator GaiaNavigator(FlightEnabledNavigator navigator)
-		{
-			return navigator.innerNavigator as GaiaNavigator;
-		}
-
 		public static Vector3 SampleParabola(Vector3 start, Vector3 end, float height, float t)
 		{
 			var direction3 = end - start;
-			var computed = start + t*direction3;
+			var computed = start + t * direction3;
 			if (Math.Abs(start.Y - end.Y) < 3.0f)
 			{
 				//start and end are roughly level, pretend they are - simpler solution with less steps
-				computed.Y += (float) (Math.Sin((t*(float) Math.PI)))*height;
+				computed.Y += (float)(Math.Sin((t * (float)Math.PI))) * height;
 			}
 			else
 			{
@@ -125,7 +136,7 @@
 				}
 				up.Normalize();
 
-				computed.Y += ((float) (Math.Sin((t*(float) Math.PI)))*height)*up.Y;
+				computed.Y += ((float)(Math.Sin((t * (float)Math.PI))) * height) * up.Y;
 			}
 
 			return computed;
@@ -165,18 +176,7 @@
 				Localization.Localization.FlightEnabledNavigator_NoPath);
 			Clear();
 
-			Navigator.NavigationProvider = innerNavigator;
-#pragma warning disable 4014
-			Task.Factory.StartNew(
-#pragma warning restore 4014
-				() =>
-				{
-					Thread.Sleep(10000);
-					logger.Info(Localization.Localization.FlightEnabledNavigator_ResetNavigatonProvider);
-					Navigator.NavigationProvider = this;
-				});
-
-			return GeneratePathResult.Failed;
+			return GeneratePathResult.Success;
 		}
 
 		private void HandlePathGenerationResult(Task<GeneratePathResult> task)
@@ -190,6 +190,7 @@
 						CurrentPath.Count,
 						pathGeneratorStopwatch.Elapsed);
 					break;
+
 				case GeneratePathResult.SuccessUseExisting:
 					logger.Info(
 						Localization.Localization.FlightEnabledNavigator_PathFound,
@@ -197,6 +198,7 @@
 						CurrentPath.Count,
 						pathGeneratorStopwatch.Elapsed);
 					break;
+
 				case GeneratePathResult.Failed:
 					logger.Error(Localization.Localization.FlightEnabledNavigator_PathNotViable, finalDestination, origin);
 					break;
@@ -234,6 +236,7 @@
 			if (distanceToNextHop >= PathPrecision)
 			{
 				//Navigator.PlayerMover.MoveTowards(CurrentPath.Current);
+
 				playerMover.MoveTowards(CurrentPath.Current);
 				return MoveResult.Moved;
 			}
@@ -257,7 +260,7 @@
 				name,
 				location.Distance(CurrentPath.Current));
 			if (!ExBuddySettings.Instance.VerboseLogging
-			    && (CurrentPath.Index%5 == 0 || CurrentPath.Index == CurrentPath.Count - 1))
+				&& (CurrentPath.Index % 5 == 0 || CurrentPath.Index == CurrentPath.Count - 1))
 			{
 				logger.Info(
 					Localization.Localization.FlightEnabledNavigator_HopMoving2,
@@ -270,22 +273,6 @@
 			//Navigator.PlayerMover.MoveTowards(CurrentPath.Current);
 			playerMover.MoveTowards(CurrentPath.Current);
 			return MoveResult.Moved;
-		}
-
-		private async Task<bool> MoveToNoFlight(Vector3 location)
-		{
-			var result = MoveResult.GeneratingPath;
-			while (Core.Player.Location.Distance3D(location) > PathPrecision || result != MoveResult.ReachedDestination
-			       || result != MoveResult.Done)
-			{
-				generatingPath = true;
-				result = innerNavigator.MoveTo(location, "Temporary Waypoint");
-				await Coroutine.Yield();
-			}
-
-			generatingPath = false;
-
-			return true;
 		}
 
 		private bool ShouldGeneratePath(Vector3 target, float radius = 0.0f)
@@ -301,7 +288,7 @@
 			if (CurrentPath != null && CurrentPath.Count != 0 && requestedDestination != Vector3.Zero)
 			{
 				// Find the max diagonal of a cube for given radius, this should be the max distance we could receive from random direction method.
-				if (radius > 0 && finalDestination.Distance(target) < Math.Sqrt(3)*radius)
+				if (radius > 0 && finalDestination.Distance(target) < Math.Sqrt(3) * radius)
 				{
 					return false;
 				}
@@ -326,40 +313,25 @@
 
 		#region INavigationProvider Members
 
-		public float PathPrecision
-		{
-			get { return innerNavigator.PathPrecision; }
-
-			set { innerNavigator.PathPrecision = value; }
-		}
-
-		public List<CanFullyNavigateResult> CanFullyNavigateTo(IEnumerable<CanFullyNavigateTarget> targets)
-		{
-			return CanFullyNavigateToAsync(targets, Core.Player.Location, WorldManager.ZoneId).Result;
-		}
-
-		public async Task<List<CanFullyNavigateResult>> CanFullyNavigateToAsync(IEnumerable<CanFullyNavigateTarget> targets)
-		{
-			return await CanFullyNavigateToAsync(targets, Core.Player.Location, WorldManager.ZoneId);
-		}
-
-		public Task<List<CanFullyNavigateResult>> CanFullyNavigateToAsync(
-			IEnumerable<CanFullyNavigateTarget> targets,
+		public override Task<List<CanFullyNavigateResult>> CanFullyNavigateTo(
+			ICollection<CanFullyNavigateTarget> targets,
 			Vector3 start,
 			ushort zoneid)
 		{
 			// TODO: not sure how much we will have to mess with this, but when I was using it, it was returning true even for Y values in mid air.
-			return innerNavigator.CanFullyNavigateToAsync(targets, start, zoneid);
+			return Original.CanFullyNavigateTo(targets, start, zoneid);
 		}
+		
 
-		public bool CanNavigateFully(Vector3 @from, Vector3 to, float strictDistance)
+		public override Task<List<CanFullyNavigateResult>> CanFullyNavigateFrom(
+			ICollection<CanFullyNavigateTarget> starts,
+			Vector3 target,
+			ushort zoneid)
 		{
-#pragma warning disable 618
-			return innerNavigator.CanNavigateFully(@from, to, strictDistance);
-#pragma warning restore 618
+			return Original.CanFullyNavigateFrom(starts, target, zoneid);
 		}
 
-		public bool Clear()
+		public override bool Clear()
 		{
 			CurrentPath.Reset();
 
@@ -367,29 +339,29 @@
 			generatingPath = false;
 			pathGeneratorStopwatch.Reset();
 
-			return innerNavigator.Clear();
+			return Original.Clear();
 		}
 
-		public MoveResult MoveTo(Vector3 location, string destination = null)
+		public override MoveResult MoveTo(MoveToParameters parameters)
 		{
 			if (generatingPath)
 			{
 				return MoveResult.GeneratingPath;
 			}
 
-			if (!playerMover.CanFly || (!MovementManager.IsFlying && !playerMover.ShouldFlyTo(location)))
+			if (!playerMover.IsDiving && (!playerMover.CanFly || (parameters.MapId != null && parameters.MapId != -1 && parameters.MapId != WorldManager.ZoneId) || (!MovementManager.IsFlying && !playerMover.ShouldFlyTo(parameters.Location))))
 			{
-				return innerNavigator.MoveTo(location, destination);
+				return Original.MoveTo(parameters);
 			}
 
 			var currentLocation = GameObjectManager.LocalPlayer.Location;
-			if (location.DistanceSqr(currentLocation) > PathPrecisionSqr)
+			if (parameters.Location.DistanceSqr(currentLocation) > PathPrecisionSqr)
 			{
-				if (ShouldGeneratePath(location))
+				if (ShouldGeneratePath(parameters.Location))
 				{
 					generatingPath = true;
 					origin = currentLocation;
-					finalDestination = requestedDestination = location;
+					finalDestination = requestedDestination = parameters.Location;
 					pathGeneratorStopwatch.Restart();
 					logger.Info("Generating path on {0} from {1} to {2}", WorldManager.ZoneId, origin, finalDestination);
 					GeneratePath(origin, finalDestination).ContinueWith(HandlePathGenerationResult);
@@ -401,10 +373,10 @@
 					return MoveResult.ReachedDestination;
 				}
 
-				return MoveToNextHop(destination);
+				return MoveToNextHop(parameters.Destination);
 			}
 
-			logger.Info("Navigation reached current destination. Within {0}", currentLocation.Distance(location));
+			logger.Info("Navigation reached current destination. Within {0}", currentLocation.Distance(parameters.Location));
 
 			requestedDestination = Vector3.Zero;
 			playerMover.MoveStop();
@@ -413,50 +385,6 @@
 			return MoveResult.Done;
 		}
 
-		public MoveResult MoveToRandomSpotWithin(Vector3 location, float radius, string destination = null)
-		{
-			if (generatingPath)
-			{
-				return MoveResult.GeneratingPath;
-			}
-
-			if (!playerMover.CanFly || (!MovementManager.IsFlying && !playerMover.ShouldFlyTo(location)))
-			{
-				return innerNavigator.MoveTo(location, destination);
-			}
-
-			var currentLocation = GameObjectManager.LocalPlayer.Location;
-			if (location.DistanceSqr(currentLocation) > PathPrecisionSqr)
-			{
-				if (ShouldGeneratePath(location, radius))
-				{
-					generatingPath = true;
-					origin = currentLocation;
-					requestedDestination = location;
-					finalDestination = location.AddRandomDirection2D(radius);
-					pathGeneratorStopwatch.Restart();
-					logger.Info("Generating path on {0} from {1} to {2}", WorldManager.ZoneId, origin, finalDestination);
-					GeneratePath(origin, finalDestination).ContinueWith(HandlePathGenerationResult);
-					return MoveResult.GeneratingPath;
-				}
-
-				if (CurrentPath.Count == 0)
-				{
-					return MoveResult.ReachedDestination;
-				}
-
-				return MoveToNextHop(destination);
-			}
-
-			logger.Info("Navigation reached current destination. Within {0}", currentLocation.Distance(location));
-
-			requestedDestination = Vector3.Zero;
-			playerMover.MoveStop();
-			CurrentPath.Reset();
-
-			return MoveResult.Done;
-		}
-
-		#endregion
+		#endregion INavigationProvider Members
 	}
 }

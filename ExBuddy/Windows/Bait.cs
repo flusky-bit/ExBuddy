@@ -1,14 +1,14 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
 	using ff14bot.Managers;
+	using System.Threading.Tasks;
 
 	public sealed class Bait : Window<Bait>
 	{
 		public Bait()
-			: base("Bait") {}
+			: base("Bait") { }
 
 		public async Task<bool> SelectBait(
 			uint baitId,
@@ -18,7 +18,7 @@
 		{
 			if (!IsValid)
 			{
-				Actionmanager.DoAction(288, GameObjectManager.LocalPlayer);
+				ActionManager.DoAction(288, GameObjectManager.LocalPlayer);
 				await Refresh(maxWait);
 				await Behaviors.Sleep(maxWait);
 			}
@@ -26,7 +26,7 @@
 			var result = SendActionResult.None;
 			var attempts = 0;
 			while ((result != SendActionResult.Success || FishingManager.SelectedBaitItemId != baitId) && attempts++ < 3
-			       && Behaviors.ShouldContinue)
+				   && Behaviors.ShouldContinue)
 			{
 				result = SetBait(baitId);
 				if (result == SendActionResult.InjectionError)

@@ -51,6 +51,6 @@
 			get { return _Instance.Value; }
 		}
 
-		#endregion
+		#endregion Static members
 	}
 }

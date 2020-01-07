@@ -1,11 +1,11 @@
 namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Linq;
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
 	using ff14bot;
 	using ff14bot.Managers;
+	using System.Linq;
+	using System.Threading.Tasks;
 
 	//Name, RequiredTime, RequiredGpBreakpoints
 	[GatheringRotation("Elemental", 0)]
@@ -34,7 +34,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{
@@ -45,11 +45,11 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 			await Wait();
 
-			var ward = WardSkills.FirstOrDefault(w => Actionmanager.CanCast(w, Core.Player));
+			var ward = WardSkills.FirstOrDefault(w => ActionManager.CanCast(w, Core.Player));
 
 			if (ward > 0)
 			{
-				Actionmanager.DoAction(ward, Core.Player);
+				ActionManager.DoAction(ward, Core.Player);
 				await IncreaseChance(tag);
 			}
 

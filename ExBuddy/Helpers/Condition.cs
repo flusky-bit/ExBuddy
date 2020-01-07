@@ -1,18 +1,18 @@
 ﻿namespace ExBuddy.Helpers
 {
-	using System;
-	using System.Collections.Concurrent;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Reflection;
 	using Clio.Utilities;
 	using ExBuddy.Logging;
 	using ff14bot.Forms.ugh;
 	using ff14bot.Managers;
 	using ff14bot.NeoProfiles;
 	using Localization;
+	using System;
+	using System.Collections.Concurrent;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Reflection;
 
-    public static class Condition
+	public static class Condition
 	{
 		public static readonly TimeSpan OneDay = new TimeSpan(1, 0, 0, 0);
 
@@ -23,7 +23,7 @@
 
 		static Condition()
 		{
-            LocalizationInitializer.Initalize();
+			LocalizationInitializer.Initalize();
 
 			SecondaryOffsetManager.IntalizeOffsets();
 
@@ -95,16 +95,19 @@
 			return result;
 		}
 
-		public static bool IsSpiritBondDone(int id)
+		public static bool IsSpiritBondDone(int id, bool nqOnly = false)
 		{
-			foreach (BagSlot slot in InventoryManager.EquippedItems)
-			{
-				if(slot.RawItemId  == id && slot.SpiritBond == 100) 
-				{
-					return true;
-				}
-			}
-			return false;
+		    return InventoryManager.EquippedItems.Any(slot => slot.RawItemId == id && Math.Abs(slot.SpiritBond - 100.0) < 0.01 && (!nqOnly || slot.TrueItemId == id));
+		}
+
+		public static bool IsFateActive(int id)
+		{
+		    return FateManager.AllFates.Any(fate => fate.Id == id && fate.Status == ff14bot.Enums.FateStatus.ACTIVE);
+		}
+
+		public static int CollectableCount(int id, int collectability)
+		{
+		    return InventoryManager.FilledSlots.Count(slot => slot.RawItemId == id && slot.Collectability >= collectability);
 		}
 
 		public static bool TrueFor(int id, TimeSpan span)
@@ -130,8 +133,8 @@
 		internal static void AddNamespacesToScriptManager(params string[] param)
 		{
 			var field =
-				typeof (ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-					.FirstOrDefault(f => f.FieldType == typeof (List<string>));
+				typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+					.FirstOrDefault(f => f.FieldType == typeof(List<string>));
 
 			if (field == null)
 			{

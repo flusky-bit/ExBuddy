@@ -1,8 +1,8 @@
 namespace ExBuddy.OrderBotTags.Fish
 {
-	using System.ComponentModel;
 	using Clio.XmlEngine;
 	using ExBuddy.Enumerations;
+	using System.ComponentModel;
 
 	[XmlElement("Keeper")]
 	public class Keeper

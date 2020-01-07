@@ -8,6 +8,8 @@
 
 		HiCordial = 12669,
 
+		WateredCordial = 16911,
+
 		Auto = ushort.MaxValue
 	}
 }

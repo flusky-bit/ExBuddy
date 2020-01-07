@@ -1,10 +1,11 @@
 ﻿namespace ExBuddy.Interfaces
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.OrderBotTags.Gather;
+	using System.Threading.Tasks;
+	using ff14bot.Objects;
 
-	public interface IGatheringRotation
+    public interface IGatheringRotation
 	{
 		GatheringRotationAttribute Attributes { get; }
 
@@ -18,6 +19,6 @@
 
 		int ResolveOverridePriority(ExGatherTag tag);
 
-		bool ShouldForceGather(ExGatherTag tag);
+		bool ShouldForceGather(GatheringPointObject node);
 	}
 }

@@ -1,11 +1,11 @@
 namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
 	using ExBuddy.Interfaces;
 	using ff14bot;
+	using System.Threading.Tasks;
 
 	//Name, RequiredTime, RequiredGpBreakpoints
 	[GatheringRotation("Ephemeral")]
@@ -15,7 +15,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 		int IGetOverridePriority.GetOverridePriority(ExGatherTag tag)
 		{
-			if (tag.IsEphemeral() && tag.CollectableItem == null)
+			if (tag.Node.IsEphemeral() && tag.CollectableItem == null)
 			{
 				return 9100;
 			}
@@ -23,7 +23,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{
@@ -32,7 +32,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 			// Yield And Quality
 			if (tag.GatherIncrease == GatherIncrease.YieldAndQuality
-			    || (tag.GatherIncrease == GatherIncrease.Auto && level >= 40 && gp >= 650))
+				|| (tag.GatherIncrease == GatherIncrease.Auto && level >= 40 && gp >= 650))
 			{
 				if (gp >= 500 && level >= 40)
 				{
@@ -82,11 +82,18 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 			// Quality
 			if (tag.GatherIncrease == GatherIncrease.Quality
-			    || (tag.GatherIncrease == GatherIncrease.Auto && level >= 15 && level < 40))
+				|| (tag.GatherIncrease == GatherIncrease.Auto && level >= 15 && level < 40))
 			{
 				if (Core.Player.CurrentGP >= 300)
 				{
-					await tag.Cast(Ability.IncreaseGatherQuality30);
+					if (Core.Player.ClassLevel >= 63)
+					{
+						await tag.Cast(Ability.IncreaseGatherQuality30100);
+					}
+					else
+					{
+						await tag.Cast(Ability.IncreaseGatherQuality30);
+					}
 					return await base.ExecuteRotation(tag);
 					;
 				}

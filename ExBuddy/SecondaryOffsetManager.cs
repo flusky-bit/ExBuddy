@@ -1,12 +1,12 @@
 ﻿namespace ExBuddy
 {
+	using ExBuddy.Attributes;
+	using ff14bot;
+	using GreyMagic;
 	using System;
 	using System.Linq;
 	using System.Reflection;
 	using System.Threading.Tasks;
-	using ExBuddy.Attributes;
-	using ff14bot;
-	using GreyMagic;
 	using logr = ff14bot.Helpers.Logging;
 
 	public static class SecondaryOffsetManager
@@ -40,22 +40,7 @@
 
 					foreach (var info in type.GetFields())
 					{
-#if RB_X64
-                            var offset = (Offset64)Attribute.GetCustomAttributes(info, typeof(Offset64)).FirstOrDefault();
-
-#else
-						var offset =
-							(Offset)
-								Attribute.GetCustomAttributes(info, typeof (Offset)).FirstOrDefault(r => r.GetType() != typeof (OffsetCN));
-
-#if RB_CN
-						     var tmp = (Offset)Attribute.GetCustomAttribute(info, typeof(OffsetCN));
-						     if (tmp != null)
-						     {
-						        offset = tmp;
-						     }
-    #endif
-#endif
+                        var offset = (Offset64)Attribute.GetCustomAttributes(info, typeof(Offset64)).FirstOrDefault();
 
 						if (offset == null)
 						{
@@ -104,45 +89,23 @@
 								}
 							}
 
-#if RB_X64
-                                var addrz = (long)results[0];
-
-								if (offset.Modifier != 0)
-								{
-									addrz = (long)(addrz + offset.Modifier);
-								}
-
-								logr.Write("[SecondaryOffsetManager] Found 0x{0:X} for {1}", addrz, info.Name);
-
-								if (info.FieldType == typeof(IntPtr))
-								{
-									info.SetValue(null, (IntPtr)addrz);
-								}
-								else
-								{
-									info.SetValue(null, (int)addrz);
-								}
-#else
-
-							var addrz = (uint) results[0];
+                            var addrz = (long)results[0];
 
 							if (offset.Modifier != 0)
 							{
-								addrz = (uint) (addrz + offset.Modifier);
+								addrz = (long)(addrz + offset.Modifier);
 							}
 
 							logr.Write("[SecondaryOffsetManager] Found 0x{0:X} for {1}", addrz, info.Name);
 
-							if (info.FieldType == typeof (IntPtr))
+							if (info.FieldType == typeof(IntPtr))
 							{
-								info.SetValue(null, (IntPtr) addrz);
+								info.SetValue(null, (IntPtr)addrz);
 							}
 							else
 							{
-								info.SetValue(null, (int) addrz);
+								info.SetValue(null, (int)addrz);
 							}
-
-#endif
 						}
 						catch (Exception e)
 						{

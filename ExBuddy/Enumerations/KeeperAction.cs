@@ -11,6 +11,7 @@
 		KeepNq = 0x01,
 
 		KeepHq = 0x02,
+
 		// MoochFlag = 0x04,
 		KeepAll = 0x03, // KeepNq | KeepHq
 

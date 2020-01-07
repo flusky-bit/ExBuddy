@@ -1,15 +1,15 @@
 ﻿namespace ExBuddy
 {
+	using ff14bot.Helpers;
 	using System.ComponentModel;
 	using System.IO;
-	using ff14bot.Helpers;
 
 	public class ExBuddySettings : JsonSettings
 	{
 		private static ExBuddySettings instance;
 
 		public ExBuddySettings()
-			: base(Path.Combine(JsonSettings.SettingsPath, "ExBuddySettings.json")) {}
+			: base(Path.Combine(JsonSettings.SettingsPath, "ExBuddySettings.json")) { }
 
 		[DefaultValue(true)]
 		public bool CharacterNameInWindowTitle { get; set; }

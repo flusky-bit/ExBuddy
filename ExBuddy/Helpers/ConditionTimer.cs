@@ -51,7 +51,7 @@ namespace ExBuddy.Helpers
 			}
 		}
 
-		#endregion
+		#endregion IDisposable Members
 
 		private static void ToggleValid(object context)
 		{

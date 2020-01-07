@@ -199,7 +199,7 @@
     <value>Mooching, this will be the only mooch.</value>
   </data>
   <data name="ExFish_NoCordial" xml:space="preserve">
-    <value>No Cordial avilable, buy more</value>
+    <value>No Cordial available, buy more </value>
   </data>
   <data name="ExFish_NoSenceOfFish" xml:space="preserve">
     <value>You do not sense any fish here.</value>
@@ -313,10 +313,10 @@
     <value>Unable to find an item to gather, moving on.</value>
   </data>
   <data name="ExGather_NothingToGather2" xml:space="preserve">
-    <value>could not find item by slot or name, gathering</value>
+    <value>could not find item by slot or name, gathering </value>
   </data>
   <data name="ExGather_NothingToGather3" xml:space="preserve">
-    <value>instead.</value>
+    <value> instead.</value>
   </data>
   <data name="ExGather_Rotationbaseoff" xml:space="preserve">
     <value>Estimating rotation based off {0}</value>
@@ -379,13 +379,13 @@
     <value>Did not meet the condition to Purify, [{0}]</value>
   </data>
   <data name="ExPurify_Land" xml:space="preserve">
-    <value>Unable to land, can't reduce unless we land!</value>
+    <value>Can't reduce unless we land!</value>
   </data>
   <data name="ExSalvage_GetCondition" xml:space="preserve">
     <value>Did not meet the condition to salvage, [{0}]</value>
   </data>
   <data name="ExSalvage_Land" xml:space="preserve">
-    <value>Unable to land, can't salvage unless we land!</value>
+    <value>Can't salvage unless we land!</value>
   </data>
   <data name="ExTurnInCollectable_AttemptingTurnin" xml:space="preserve">
     <value>Attempting to turn in item {0} -&gt; 0x{1}</value>
@@ -393,8 +393,8 @@
   <data name="ExTurnInCollectable_ErrorClassType" xml:space="preserve">
     <value>Error, could not resolve class type for item:</value>
   </data>
-  <data name="ExTurnInCollectable_FailedPurchaseMorDhona" xml:space="preserve">
-    <value>Unable to purchase item {0} in MorDhona, set location to Idyllshire.</value>
+  <data name="ExTurnInCollectable_FailedPurchaseGorRhalgrsReach" xml:space="preserve">
+    <value>Unable to purchase item {0}, set location to Rhalgr's Reach.</value>
   </data>
   <data name="ExTurnInCollectable_InteractingTimeout" xml:space="preserve">
     <value>Timeout interacting with npc.</value>
@@ -415,7 +415,7 @@
     <value>Purchases complete.</value>
   </data>
   <data name="ExTurnInCollectable_Purchased" xml:space="preserve">
-    <value>Purchased item {0} for {1} {2} scrips at {3} ET; Remaining Scrips: {4}</value>
+    <value>Purchased {5} {0} for {1} {2} scrips at {3} ET; Remaining Scrips: {4}</value>
   </data>
   <data name="ExTurnInCollectable_PurchaseTimeout" xml:space="preserve">
     <value>Timeout during purchase of {0}</value>
@@ -501,11 +501,8 @@
   <data name="DefaultReturnStrategy_Default" xml:space="preserve">
     <value>Default: Death Location: {0}, AetheryteId: {1}</value>
   </data>
-  <data name="ExGather_Cordial" xml:space="preserve">
-    <value>Using cordial when it becomes available</value>
-  </data>
   <data name="ExGather_CordialNotAvailable" xml:space="preserve">
-    <value>No Cordial avilable, buy more</value>
+    <value>No Cordial available, buy more </value>
   </data>
   <data name="ExGather_CordialUse" xml:space="preserve">
     <value>Using Cordial -&gt; Waiting (sec): {0}, CurrentGP: {1}</value>
@@ -574,7 +571,7 @@
     <value>TouchAndGo override, maxTimeout being set between 2 and 16 seconds</value>
   </data>
   <data name="ExGather_TnGSeconds" xml:space="preserve">
-    <value>TouchAndGo strategy override, not waiting for GP unless it is less than 16 seconds</value>
+    <value>Expected wait of {0} exceeds maximum TouchAndGo wait of {1}</value>
   </data>
   <data name="NoAetheryteUseAethernetReturn_AethernetText" xml:space="preserve">
     <value>Aethernet.</value>
@@ -689,5 +686,47 @@
   </data>
   <data name="FlightEnabledSlideMover_TakeoffStart" xml:space="preserve">
     <value>Started Takeoff Task</value>
+  </data>
+  <data name="CordialConsumer_CordialCannotBeUsedByDeadPlayer" xml:space="preserve">
+    <value>🍼 {0} cannot be used because player is dead. </value>
+  </data>
+  <data name="CordialConsumer_CordialCannotBeUsedByMountedPlayer" xml:space="preserve">
+    <value>🍼 {0} cannot be used because player is mounted. </value>
+  </data>
+  <data name="CordialConsumer_CordialCannotBeUsedByPlayer" xml:space="preserve">
+    <value>🍼 {0} cannot be used by player.</value>
+  </data>
+  <data name="CordialConsumer_CordialCannotBeUsedDismountFailed" xml:space="preserve">
+    <value>🍼 {0} cannot be used because dismount failed.</value>
+  </data>
+  <data name="CordialConsumer_CordialItemTypeInvalid" xml:space="preserve">
+    <value>🍼 Item {0} is not valid.</value>
+  </data>
+  <data name="CordialConsumer_CordialOnCooldown" xml:space="preserve">
+    <value>🍼 {0} cannot be used because it is on cooldown.</value>
+  </data>
+  <data name="CordialConsumer_CordialStockDepleted" xml:space="preserve">
+    <value>🍼 {0} cannot be used because stock is depleted.</value>
+  </data>
+  <data name="CordialConsumer_CordialUsed" xml:space="preserve">
+    <value>🍼 {0} was used. Original GP: {1}, Cordial GP: {2}, Regenerated GP: {3}, Target GP: {4}</value>
+  </data>
+  <data name="ExGather_CordialUseDisabledNoStock" xml:space="preserve">
+    <value>Cordial use has been disabled because there is no cordial stock</value>
+  </data>
+  <data name="ExGather_NoCordialWasAppropriate" xml:space="preserve">
+    <value>No cordial was found that satisfies the missing GP. Original GP: {0}, Target GP: {1}, Total Missing: {2}</value>
+  </data>
+  <data name="ExGather_BeforeGatherReport" xml:space="preserve">
+    <value>Starting GP: {0}, Current GP: {1}, Effective GP: {2}, Breakpoint GP: {3}, Target GP: {4}, Max GP: {5}, Selected Cordial: {6}, Selected Cordial Size: {7}</value>
+  </data>
+  <data name="ExGather_BeforeGatherWait" xml:space="preserve">
+    <value>Regenerating GP for approximately {0} seconds.</value>
+  </data>
+  <data name="ExSpearFish_SpearFishing" xml:space="preserve">
+    <value>Spearfish : {0}, HQ : {1}, size: {2} at {3} ET.</value>
+  </data>
+  <data name="ExSpearFish_UsingVeteranTrade" xml:space="preserve">
+    <value>Using Veteran Trade on {0}.</value>
   </data>
 </root>

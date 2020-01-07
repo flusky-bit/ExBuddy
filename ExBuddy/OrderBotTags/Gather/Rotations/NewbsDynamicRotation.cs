@@ -1,10 +1,10 @@
 namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System;
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
 	using ff14bot;
+	using System;
+	using System.Threading.Tasks;
 
 	[GatheringRotation("NewbCollect", 30, 600)]
 	public sealed class NewbCollectGatheringRotation : CollectableGatheringRotation, IGetOverridePriority
@@ -22,7 +22,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{
@@ -47,7 +47,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			var rarity = CurrentRarity;
 			tag.Logger.Info("Post non-plus Rarity: " + rarity);
 
-			if (rarity >= 119 && rarity <= 124)
+			if (rarity <= 124)
 			{
 				if (level >= 53)
 				{
@@ -182,10 +182,10 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 		public async Task<bool> GetOne(ExGatherTag tag)
 		{
-			//Get One - Level 51 Minimum           
+			//Get One - Level 51 Minimum
 			await DiscerningMethodical(tag);
 			await UtmostMethodical(tag);
-			await UtmostMethodical(tag);
+			await Methodical(tag);
 			await IncreaseChance(tag);
 			return true;
 		}
@@ -196,7 +196,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			await UtmostCaution(tag);
 			await AppraiseAndRebuff(tag);
 			await Methodical(tag);
-			await UtmostMethodical(tag);
+			await Methodical(tag);
 			await IncreaseChance(tag);
 			return true;
 		}
@@ -207,7 +207,6 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			await UtmostCaution(tag);
 			await AppraiseAndRebuff(tag);
 			await Methodical(tag);
-			await UtmostCaution(tag);
 			await AppraiseAndRebuff(tag);
 			await Methodical(tag);
 			await IncreaseChance(tag);
@@ -255,13 +254,13 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 		public async Task<bool> TryHard(ExGatherTag tag)
 		{
-			//Try Hard - Level 53 Minimum           
+			//Try Hard - Level 53 Minimum
 			await UtmostImpulsive(tag);
 
 			if (HasDiscerningEye)
 			{
 				tag.Logger.Info("Discerning Eye Proc!");
-				await UtmostMethodical(tag);
+				await Methodical(tag);
 				await DiscerningMethodical(tag);
 				await IncreaseChance(tag);
 			}
@@ -269,7 +268,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			{
 				tag.Logger.Info("No Discerning Eye Proc!");
 				await DiscerningImpulsive(tag);
-				await UtmostMethodical(tag);
+				await Methodical(tag);
 				await IncreaseChance(tag);
 			}
 
@@ -278,10 +277,10 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 
 		public async Task<bool> TryHarder(ExGatherTag tag)
 		{
-			//Try Harder - Level 53 Minimum            
+			//Try Harder - Level 53 Minimum
 			await DiscerningImpulsive(tag);
 			await UtmostImpulsive(tag);
-			await UtmostMethodical(tag);
+			await Methodical(tag);
 			await IncreaseChance(tag);
 			return true;
 		}

@@ -15,25 +15,25 @@
 		}
 
 		public CustomNpc(INpc npc)
-			: this(npc.AetheryteId, npc.ZoneId, npc.Location, npc.NpcId, npc.Name) {}
+			: this(npc.AetheryteId, npc.ZoneId, npc.Location, npc.NpcId, npc.Name) { }
 
 		#region IAetheryteId Members
 
 		public uint AetheryteId { get; set; }
 
-		#endregion
+		#endregion IAetheryteId Members
 
 		#region INamedItem Members
 
 		public string Name { get; set; }
 
-		#endregion
+		#endregion INamedItem Members
 
 		#region IZoneId Members
 
 		public ushort ZoneId { get; set; }
 
-		#endregion
+		#endregion IZoneId Members
 
 		#region IInteractWithNpc Members
 
@@ -41,6 +41,6 @@
 
 		public uint NpcId { get; set; }
 
-		#endregion
+		#endregion IInteractWithNpc Members
 	}
 }

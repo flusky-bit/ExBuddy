@@ -1,24 +1,19 @@
 ﻿namespace ExBuddy.OrderBotTags.Fish
 {
-	using System;
 	using ExBuddy.Enumerations;
+	using System;
 
 	public class FishResult
 	{
-		public string FishName
-		{
-			get
-			{
-				if (IsHighQuality)
-				{
-					return Name.Substring(0, Name.Length - 2);
-				}
+		public string FishName =>
+#if !RB_CN
+		    IsHighQuality
+		        ? Name.Substring(0, Name.Length - 2)
+		        :
+#endif
+		        Name;
 
-				return Name;
-			}
-		}
-
-		public bool IsHighQuality { get; set; }
+        public bool IsHighQuality { get; set; }
 
 		public string Name { get; set; }
 
@@ -36,22 +31,9 @@
 				return false;
 			}
 
-			if ((!keeper.Action.HasFlag(KeeperAction.KeepNq) && !IsHighQuality))
-			{
-				return false;
-			}
-
-			return true;
+			return keeper.Action.HasFlag(KeeperAction.KeepNq) || IsHighQuality;
 		}
 
-		public bool ShouldMooch(Keeper keeper)
-		{
-			if (!keeper.Action.HasFlag((KeeperAction) 0x04))
-			{
-				return false;
-			}
-
-			return true;
-		}
-	}
+        public bool ShouldMooch(Keeper keeper) => keeper.Action.HasFlag((KeeperAction)0x04);
+    }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
+	using System.Threading.Tasks;
 
 	[GatheringRotation("Collect345", 24)]
 	public sealed class Collect345GatheringRotation : CollectableGatheringRotation, IGetOverridePriority
@@ -20,7 +20,7 @@
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{

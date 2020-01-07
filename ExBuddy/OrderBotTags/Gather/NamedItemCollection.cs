@@ -1,9 +1,9 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather
 {
-	using System.Collections;
-	using System.Collections.Generic;
 	using Clio.XmlEngine;
 	using ExBuddy.Interfaces;
+	using System.Collections;
+	using System.Collections.Generic;
 
 	[XmlElement("Items")]
 	public class NamedItemCollection : IList<INamedItem>
@@ -23,7 +23,7 @@
 			return GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable Members
 
 		#region IEnumerable<INamedItem> Members
 
@@ -32,7 +32,7 @@
 			return Items.GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable<INamedItem> Members
 
 		#region ICollection<INamedItem> Members
 
@@ -71,7 +71,7 @@
 			return Items.Remove(item);
 		}
 
-		#endregion
+		#endregion ICollection<INamedItem> Members
 
 		#region IList<INamedItem> Members
 
@@ -96,6 +96,6 @@
 			Items.RemoveAt(index);
 		}
 
-		#endregion
+		#endregion IList<INamedItem> Members
 	}
 }

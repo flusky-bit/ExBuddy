@@ -1,12 +1,12 @@
 namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Threading.Tasks;
 	using ExBuddy.Attributes;
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
 	using ExBuddy.Interfaces;
 	using ff14bot;
 	using ff14bot.Managers;
+	using System.Threading.Tasks;
 
 	//Name, RequiredTime, RequiredGpBreakpoints
 	[GatheringRotation("SmartYield", 18, 500, 400, 300, 0)]
@@ -22,7 +22,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			}
 
 			if (tag.GatherIncrease == GatherIncrease.Yield
-			    || (tag.GatherIncrease == GatherIncrease.Auto && Core.Player.ClassLevel >= 40))
+				|| (tag.GatherIncrease == GatherIncrease.Auto && Core.Player.ClassLevel >= 40))
 			{
 				return 9001;
 			}
@@ -30,7 +30,7 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{

@@ -1,7 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.Threading.Tasks;
-	using System.Windows.Media;
 	using Clio.XmlEngine;
 	using ExBuddy.Attributes;
 	using ExBuddy.Helpers;
@@ -10,6 +8,8 @@
 	using ff14bot.Managers;
 	using ff14bot.NeoProfiles;
 	using ff14bot.Objects;
+	using System.Threading.Tasks;
+	using System.Windows.Media;
 	using TreeSharp;
 
 	public abstract class ExProfileBehavior : ProfileBehavior, ILogColors
@@ -62,14 +62,19 @@
 		protected virtual Color Info
 		{
 			get { return Logger.Colors.Info; }
-		}
+	    }
 
-		protected virtual Color Warn
-		{
-			get { return Logger.Colors.Warn; }
-		}
+	    protected virtual Color Warn
+	    {
+	        get { return Logger.Colors.Warn; }
+	    }
 
-		public override string ToString()
+	    protected virtual Color Mew
+	    {
+	        get { return Logger.Colors.Mew; }
+	    }
+
+        public override string ToString()
 		{
 			return this.DynamicToString("StatusText", "Behavior");
 		}
@@ -77,11 +82,13 @@
 		protected override Composite CreateBehavior()
 		{
 			return new ExCoroutineAction(ctx => Main(), this);
-		}
+	    }
 
-		protected virtual void DoReset() {}
+	    protected virtual void DoReset()
+	    {
+	    }
 
-		protected abstract Task<bool> Main();
+        protected abstract Task<bool> Main();
 
 		protected override sealed void OnResetCachedDone()
 		{
@@ -99,13 +106,18 @@
 		Color ILogColors.Info
 		{
 			get { return Info; }
-		}
+	    }
 
-		Color ILogColors.Warn
-		{
-			get { return Warn; }
-		}
+	    Color ILogColors.Warn
+	    {
+	        get { return Warn; }
+	    }
 
-		#endregion
-	}
+	    Color ILogColors.Mew
+	    {
+	        get { return Mew; }
+	    }
+
+        #endregion ILogColors Members
+    }
 }

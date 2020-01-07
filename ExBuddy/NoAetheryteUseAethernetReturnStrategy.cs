@@ -1,10 +1,7 @@
-
 #pragma warning disable 1998
 
 namespace ExBuddy
 {
-	using System.Linq;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using ExBuddy.Helpers;
@@ -13,6 +10,8 @@ namespace ExBuddy
 	using ff14bot.Behavior;
 	using ff14bot.Managers;
 	using ff14bot.RemoteWindows;
+	using System.Linq;
+	using System.Threading.Tasks;
 
 	public class NoAetheryteUseAethernetReturnStrategy : IReturnStrategy, IInteractWithNpc
 	{
@@ -32,13 +31,13 @@ namespace ExBuddy
 
 		public uint AetheryteId { get; set; }
 
-		#endregion
+		#endregion IAetheryteId Members
 
 		#region IZoneId Members
 
 		public ushort ZoneId { get; set; }
 
-		#endregion
+		#endregion IZoneId Members
 
 		#region IInteractWithNpc Members
 
@@ -46,7 +45,7 @@ namespace ExBuddy
 
 		public uint NpcId { get; set; }
 
-		#endregion
+		#endregion IInteractWithNpc Members
 
 		#region IReturnStrategy Members
 
@@ -103,6 +102,6 @@ namespace ExBuddy
 			return true;
 		}
 
-		#endregion
+		#endregion IReturnStrategy Members
 	}
 }

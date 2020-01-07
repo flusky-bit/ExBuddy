@@ -1,14 +1,16 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System.Threading.Tasks;
 	using Attributes;
-	using Interfaces;
 	using ff14bot;
+	using Interfaces;
+	using System.Threading.Tasks;
+	using Helpers;
 
-	[GatheringRotation("Collect515", 30, 600)]
+    [GatheringRotation("Collect515", 35, 600)]
 	public sealed class Collect515GatheringRotation : CollectableGatheringRotation, IGetOverridePriority
 	{
 		#region IGetOverridePriority Members
+
 		int IGetOverridePriority.GetOverridePriority(ExGatherTag tag)
 		{
 			// if we have a collectable && the collectable value is greater than or equal to 515: Priority 515
@@ -18,14 +20,17 @@
 			}
 			return -1;
 		}
-		#endregion
+
+		#endregion IGetOverridePriority Members
+
 		public override async Task<bool> ExecuteRotation(ExGatherTag tag)
 		{
-			if (tag.IsUnspoiled())
+			if (tag.Node.IsUnspoiled())
 			{
 				await DiscerningMethodical(tag);
 				await DiscerningMethodical(tag);
 				await DiscerningMethodical(tag);
+				await IncreaseChance(tag);
 			}
 			else
 			{
@@ -34,13 +39,16 @@
 					await DiscerningMethodical(tag);
 					await DiscerningMethodical(tag);
 					await DiscerningMethodical(tag);
-					return true;
+					await IncreaseChance(tag);
 				}
+				else
+				{
+					await Impulsive(tag);
+					await Impulsive(tag);
+				    await Instinctual(tag);
+                }
+            }
 
-				await Impulsive(tag);
-				await Impulsive(tag);
-				await Methodical(tag);
-			}
 			return true;
 		}
 	}

@@ -1,7 +1,5 @@
 ﻿namespace ExBuddy.OrderBotTags.Behaviors
 {
-	using System.ComponentModel;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
@@ -12,6 +10,8 @@
 	using ff14bot.Managers;
 	using ff14bot.Navigation;
 	using ff14bot.RemoteWindows;
+	using System.ComponentModel;
+	using System.Threading.Tasks;
 	using PurifyDialog = ExBuddy.Windows.PurifyDialog;
 
 	[LoggerName("ExPurify")]
@@ -40,14 +40,7 @@
 
 			Navigator.Stop();
 
-			var ticks = 0;
-			while (MovementManager.IsFlying && ticks++ < 5 && Behaviors.ShouldContinue)
-			{
-				MovementManager.StartDescending();
-				await Coroutine.Wait(500, () => !MovementManager.IsFlying);
-			}
-
-			if (ticks > 5)
+			if (MovementManager.IsFlying && !MovementManager.IsDiving)
 			{
 				Logger.Error(Localization.Localization.ExPurify_Land);
 				return isDone = true;
@@ -64,11 +57,11 @@
 						return true;
 					}
 
-					Actionmanager.Dismount();
+					ActionManager.Dismount();
 					return false;
 				}))
 			{
-				await PurifyDialog.ReduceAllItems(InventoryManager.FilledSlots, (ushort) MaxWait);
+				await PurifyDialog.ReduceAllItems(InventoryManager.FilledSlots, (ushort)MaxWait);
 			}
 			else
 			{

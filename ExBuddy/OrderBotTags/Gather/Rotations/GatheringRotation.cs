@@ -1,17 +1,18 @@
 ﻿namespace ExBuddy.OrderBotTags.Gather.Rotations
 {
-	using System;
-	using System.Threading.Tasks;
 	using Buddy.Coroutines;
 	using ExBuddy.Attributes;
 	using ExBuddy.Helpers;
 	using ExBuddy.Interfaces;
 	using ff14bot;
 	using ff14bot.Managers;
+	using System;
+	using System.Threading.Tasks;
+	using ff14bot.Objects;
 
-	public abstract class GatheringRotation : IGatheringRotation
+    public abstract class GatheringRotation : IGatheringRotation
 	{
-		protected internal static readonly uint[] WardSkills = {236U, 293U, 234U, 292U, 217U, 219U};
+		protected internal static readonly uint[] WardSkills = { 236U, 293U, 234U, 292U, 217U, 219U };
 
 		protected internal readonly IGetOverridePriority GetOverridePriorityCached;
 
@@ -22,12 +23,12 @@
 
 		protected internal static async Task Wait()
 		{
-			if (GatheringManager.ShouldPause(DataManager.SpellCache[(uint) Ability.Preparation]))
+			if (GatheringManager.ShouldPause(DataManager.SpellCache[(uint)Ability.Preparation]))
 			{
 				var ticks = 0;
 				while (ticks++ < 60 && Behaviors.ShouldContinue)
 				{
-					if (!GatheringManager.ShouldPause(DataManager.SpellCache[(uint) Ability.Preparation]))
+					if (!GatheringManager.ShouldPause(DataManager.SpellCache[(uint)Ability.Preparation]))
 					{
 						break;
 					}
@@ -45,7 +46,7 @@
 				return await tag.Cast(Ability.IncreaseGatherChance50);
 			}
 
-			if (Core.Player.CurrentGP >= 100 && tag.GatherItem.Chance < 86 && level > 4)
+			if (Core.Player.CurrentGP >= 100 && tag.GatherItem.Chance < 95 && level > 4)
 			{
 				if (level >= 23 && GatheringManager.SwingsRemaining == 1)
 				{
@@ -55,7 +56,7 @@
 				return await tag.Cast(Ability.IncreaseGatherChance15);
 			}
 
-			if (Core.Player.CurrentGP >= 50 && tag.GatherItem.Chance < 96 && level > 3)
+			if (Core.Player.CurrentGP >= 50 && tag.GatherItem.Chance < 100 && level > 3)
 			{
 				if (level >= 23 && GatheringManager.SwingsRemaining == 1)
 				{
@@ -134,7 +135,7 @@
 
 		public virtual async Task<bool> Prepare(ExGatherTag tag)
 		{
-			if (Core.Player.HasAura((int) AbilityAura.CollectorsGlove))
+			if (Core.Player.HasAura((int)AbilityAura.CollectorsGlove))
 			{
 				return await tag.Cast(Ability.CollectorsGlove);
 			}
@@ -160,11 +161,11 @@
 			return -1;
 		}
 
-		public virtual bool ShouldForceGather(ExGatherTag tag)
+		public virtual bool ShouldForceGather(GatheringPointObject node)
 		{
 			return false;
 		}
 
-		#endregion
+		#endregion IGatheringRotation Members
 	}
 }

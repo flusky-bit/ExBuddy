@@ -1,7 +1,7 @@
 ﻿namespace ExBuddy.Agents
 {
-	using System;
 	using ff14bot.Managers;
+	using System;
 
 	public abstract class Agent<T>
 		where T : Agent<T>, new()

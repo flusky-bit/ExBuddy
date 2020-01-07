@@ -19,6 +19,6 @@ namespace ExBuddy.OrderBotTags.Gather.Rotations
 			return -1;
 		}
 
-		#endregion
+		#endregion IGetOverridePriority Members
 	}
 }

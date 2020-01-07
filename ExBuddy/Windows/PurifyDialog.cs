@@ -1,18 +1,18 @@
 ﻿namespace ExBuddy.Windows
 {
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Threading.Tasks;
 	using ExBuddy.Helpers;
 	using ExBuddy.Logging;
 	using ff14bot.Behavior;
 	using ff14bot.Enums;
 	using ff14bot.Managers;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading.Tasks;
 
 	public sealed class PurifyDialog : Window<PurifyDialog>
 	{
 		public PurifyDialog()
-			: base("PurifyDialog") {}
+			: base("PurifyDialog") { }
 
 		public static async Task<bool> ReduceAllItems(IEnumerable<BagSlot> bagSlots, ushort maxWait = 5000)
 		{

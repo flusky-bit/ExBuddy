@@ -1,13 +1,13 @@
 namespace ExBuddy.OrderBotTags.Fish
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Linq;
 	using Clio.Utilities;
 	using Clio.XmlEngine;
 	using ff14bot;
 	using ff14bot.Managers;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Linq;
 
 	[XmlElement("Bait")]
 	public class Bait

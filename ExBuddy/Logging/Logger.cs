@@ -1,12 +1,12 @@
 ﻿namespace ExBuddy.Logging
 {
-	using System;
-	using System.Globalization;
-	using System.Reflection;
 	using Clio.Utilities;
 	using ExBuddy.Attributes;
 	using ExBuddy.Interfaces;
 	using ff14bot.Helpers;
+	using System;
+	using System.Globalization;
+	using System.Reflection;
 
 	public sealed class Logger
 	{
@@ -21,7 +21,7 @@
 		static Logger()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
-			if (assembly.IsDefined(typeof (AssemblyFileVersionAttribute)))
+			if (assembly.IsDefined(typeof(AssemblyFileVersionAttribute)))
 			{
 				try
 				{
@@ -40,7 +40,7 @@
 		}
 
 		public Logger()
-			: this(new LogColors()) {}
+			: this(new LogColors()) { }
 
 		public Logger(ILogColors logColors, string name = null, bool includeVersion = false)
 		{
@@ -72,20 +72,31 @@
 
 				return string.Format("[{0}] ", Name);
 			}
-		}
+	    }
 
-		public void Error(string message)
-		{
-			Logging.Write(logColors.Error, Prefix + message);
-		}
+	    public void Mew(string message)
+	    {
+	        Logging.Write(logColors.Mew, Prefix + message);
+	    }
 
-		[StringFormatMethod("format")]
-		public void Error(string format, params object[] args)
-		{
-			Logging.Write(logColors.Error, Prefix + string.Format(CultureInfo.InvariantCulture, format, args));
-		}
+	    [StringFormatMethod("format")]
+	    public void Mew(string format, params object[] args)
+	    {
+	        Logging.Write(logColors.Mew, Prefix + string.Format(CultureInfo.InvariantCulture, format, args));
+	    }
 
-		public void Info(string message)
+	    public void Error(string message)
+	    {
+	        Logging.Write(logColors.Error, Prefix + message);
+	    }
+
+	    [StringFormatMethod("format")]
+	    public void Error(string format, params object[] args)
+	    {
+	        Logging.Write(logColors.Error, Prefix + string.Format(CultureInfo.InvariantCulture, format, args));
+	    }
+
+        public void Info(string message)
 		{
 			Logging.Write(logColors.Info, Prefix + message);
 		}

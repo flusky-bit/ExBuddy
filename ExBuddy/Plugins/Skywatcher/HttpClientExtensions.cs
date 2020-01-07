@@ -1,10 +1,10 @@
 ﻿namespace ExBuddy.Plugins.Skywatcher
 {
+	using ExBuddy.Logging;
+	using Newtonsoft.Json;
 	using System;
 	using System.Net.Http;
 	using System.Threading.Tasks;
-	using ExBuddy.Logging;
-	using Newtonsoft.Json;
 
 	public static class HttpClientExtensions
 	{

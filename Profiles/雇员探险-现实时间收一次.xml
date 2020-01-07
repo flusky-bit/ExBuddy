@@ -1,0 +1,13 @@
+<!DOCTYPE Profile []>
+<Profile>
+	<Name>雇员探险</Name>
+	<Author>flusky-bit</Author>
+	<KillRadius>50</KillRadius>
+	<Order>
+		<While Condition="True">
+			<EtxRetainer />
+			<LogMessage Message="收完雇员，等待10分钟" />
+			<WaitTimer WaitTime="600" />
+		</While>
+	</Order>
+</Profile>

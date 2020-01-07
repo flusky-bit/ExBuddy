@@ -1,13 +1,11 @@
 ﻿namespace ExBuddy.Data
 {
+	using ff14bot.Managers;
+	using SQLite;
 	using System;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Linq;
-
-	using ff14bot.Managers;
-
-	using SQLite;
 
 	public class SqlData : SQLiteConnection
 	{
